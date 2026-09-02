@@ -158,10 +158,10 @@ def encrypt_all_shards(
         if os.path.isfile(os.path.join(shards_dir, f)) and f.endswith(".mp4")
     ])
     if not shard_files:
-        print("⚠ No shards found to encrypt!")
+        print("No shards found to encrypt!")
         return {"processed": [], "data_count": 0}
 
-    print(f"🔒 Encrypting {len(shard_files)} sequential shard(s) with AES-256-GCM Envelope Encryption...")
+    print(f" Encrypting {len(shard_files)} sequential shard(s) with AES-256-GCM Envelope Encryption...")
     start = time.perf_counter()
 
     workers = min(len(shard_files), os.cpu_count() or 8)
@@ -173,7 +173,7 @@ def encrypt_all_shards(
             processed.append(name)
 
     elapsed = time.perf_counter() - start
-    print(f"🎉 All {len(processed)} sequential shards sealed with AES-256-GCM in {elapsed:.3f}s")
+    print(f" All {len(processed)} sequential shards sealed with AES-256-GCM in {elapsed:.3f}s")
     
     return {
         "processed": sorted(processed),

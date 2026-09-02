@@ -32,23 +32,23 @@ def test_full_auth_flow():
     )
     assert upload_res.status_code == 200, f"Upload failed: {upload_res.data}"
     movie_id = upload_res.get_json()["movie_id"]
-    print(f"✔ 1. Uploaded test video: movie_id={movie_id}")
+    print(f" 1. Uploaded test video: movie_id={movie_id}")
 
     # Step 2: Run process SSE pipeline
     proc_res = client.get(f"/api/process/{movie_id}")
     assert proc_res.status_code == 200, "Process SSE failed"
     sse_data = proc_res.data.decode('utf-8')
-    print("✔ 2. Process SSE pipeline executed successfully")
+    print(" 2. Process SSE pipeline executed successfully")
 
     # Extract key
     master_kek = load_or_create_master_kek(KEY_PATH).hex()
-    print(f"✔ 3. Master KEK: {master_kek}")
+    print(f" 3. Master KEK: {master_kek}")
 
     # Step 3: Test Theatre Ingest Simulate
     sim_res = client.post("/api/theatre/ingest-simulate", json={"theatre_id": "THEATRE_001"})
     assert sim_res.status_code == 200, f"Ingest simulate failed: {sim_res.data}"
     sim_data = sim_res.get_json()
-    print(f"✔ 4. Ingest simulate verified {sim_data['total_shards']} sequential shards across storage mesh")
+    print(f" 4. Ingest simulate verified {sim_data['total_shards']} sequential shards across storage mesh")
 
     # Step 4: Test Theatre Manual KEK Unlock on /api/authenticate
     auth_res = client.post("/api/authenticate", json={"key": master_kek, "theatre_id": "THEATRE_001"})
@@ -57,14 +57,14 @@ def test_full_auth_flow():
     assert auth_res.status_code == 200, f"Authentication with Master KEK failed: {auth_res.data}"
     auth_data = auth_res.get_json()
     assert auth_data["success"] is True
-    print(f"✔ 5. Master KEK Authentication succeeded! Token: {auth_data['token']}")
+    print(f" 5. Master KEK Authentication succeeded! Token: {auth_data['token']}")
 
     # Step 5: Test video stream endpoint
     stream_res = client.get(f"/api/stream/{auth_data['token']}")
     assert stream_res.status_code in [200, 206], f"Stream endpoint failed: {stream_res.status_code}"
-    print(f"✔ 6. Video streaming verified! Received {len(stream_res.data)} bytes of zero-disk video stream.")
+    print(f" 6. Video streaming verified! Received {len(stream_res.data)} bytes of zero-disk video stream.")
 
-    print("\n🎉 ALL THEATRE INGEST & PLAYBACK TESTS PASSED 100%!")
+    print("\n ALL THEATRE INGEST & PLAYBACK TESTS PASSED 100%!")
 
 
 if __name__ == "__main__":

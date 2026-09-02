@@ -282,4 +282,4 @@ if __name__ == "__main__":
     assert recovered[2] == data[2]
     assert recovered[3] == data[3]
     
-    print("  ✔ REED-SOLOMON SELF-HEALING SUCCESS: Recovered lost shards [1, 2] bit-for-bit from parity shards!")
+    print("  REED-SOLOMON SELF-HEALING SUCCESS: Recovered lost shards [1, 2] bit-for-bit from parity shards!")

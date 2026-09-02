@@ -46,7 +46,7 @@ def run_all_tests():
         with open(shard_path, "wb") as f:
             f.write(payload)
 
-    print(f"✔ Created {len(dummy_payloads)} test shards.")
+    print(f" Created {len(dummy_payloads)} test shards.")
 
     # 2. Test AES-256-GCM Envelope Encryption
     print("\n[2/6] Testing AES-256-GCM Envelope Encryption...")
@@ -54,7 +54,7 @@ def run_all_tests():
     master_kek = load_or_create_master_kek(key_path)
     processed = encrypt_all_shards(shards_dir=test_shards_dir, encrypted_dir=test_enc_dir, key_path=key_path)
     assert len(processed) == len(dummy_payloads), "All shards must be encrypted"
-    print(f"✔ Sealed {len(processed)} shards with unique DEKs under Master KEK.")
+    print(f" Sealed {len(processed)} shards with unique DEKs under Master KEK.")
 
     # 3. Test Multi-Cloud Storage Mesh Dispersion
     print("\n[3/6] Testing Multi-Cloud Zero-Trust Storage Mesh Dispersion...")
@@ -62,7 +62,7 @@ def run_all_tests():
     routing_map = scatter_shards(test_enc_dir)
     assert len(routing_map) == len(dummy_payloads), "All shards must have cloud routes"
     mesh_status = get_mesh_status()
-    print(f"✔ Shards scattered across {mesh_status['total_nodes']} cloud nodes.")
+    print(f" Shards scattered across {mesh_status['total_nodes']} cloud nodes.")
     for nid, n in mesh_status['nodes'].items():
         print(f"   - {n['icon']} {n['name']}: {n['shard_count']} shard(s)")
 
@@ -77,8 +77,8 @@ def run_all_tests():
     )
     merkle_root = manifest["merkle_root"]
     assert merkle_root, "Merkle Root must be generated"
-    print(f"✔ Merkle Root Hash: {merkle_root}")
-    print(f"✔ Total Merkle Tree Levels: {manifest['merkle_levels']}")
+    print(f" Merkle Root Hash: {merkle_root}")
+    print(f" Total Merkle Tree Levels: {manifest['merkle_levels']}")
 
     # Verify Merkle proofs for every shard
     for s in manifest["shards"]:
@@ -86,7 +86,7 @@ def run_all_tests():
         leaf_hash = s["sha256"]
         valid = verify_merkle_proof(leaf_hash, proof, merkle_root)
         assert valid, f"Merkle proof verification failed for {s['id']}"
-    print(f"✔ 100% of shard Merkle audit proofs cryptographically verified.")
+    print(f" 100% of shard Merkle audit proofs cryptographically verified.")
 
     # 5. Test DCI Hardware Certificate Attestation & KMS KDM Broker
     print("\n[5/6] Testing DCI Hardware Certificate & KMS KDM Broker...")
@@ -95,7 +95,7 @@ def run_all_tests():
 
     success, kdm = issue_ephemeral_kdm("THEATRE_001")
     assert success, f"KMS must issue KDM for THEATRE_001 ({kdm.get('error')})"
-    print(f"✔ Ephemeral KDM Issued: {kdm['kdm_id']}")
+    print(f" Ephemeral KDM Issued: {kdm['kdm_id']}")
     print(f"   Theatre: {kdm['theatre_name']}")
     print(f"   Projector SMB: {kdm['projector_smb']}")
 
@@ -110,10 +110,10 @@ def run_all_tests():
         decrypted_bytes = decrypt_shard(encrypted_bytes, kdm_kek)
         assert decrypted_bytes == dummy_payloads[i], f"Decrypted payload mismatch on shard {i}"
         del decrypted_bytes
-    print("✔ All shards retrieved from multi-cloud mesh and decrypted accurately in RAM.")
+    print(" All shards retrieved from multi-cloud mesh and decrypted accurately in RAM.")
 
     print("\n=================================================================")
-    print("🎉 ALL 6 ZERO-TRUST BRIDGE VERIFICATION TESTS PASSED SUCCESSFULLY!")
+    print(" ALL 6 ZERO-TRUST BRIDGE VERIFICATION TESTS PASSED SUCCESSFULLY!")
     print("=================================================================\n")
 
 if __name__ == "__main__":

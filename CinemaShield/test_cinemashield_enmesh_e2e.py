@@ -32,13 +32,13 @@ RESULTS = {}
 
 def record_result(step_name: str, passed: bool, details: str = ""):
     RESULTS[step_name] = "PASS" if passed else "FAIL"
-    status_icon = "✔ PASS" if passed else "❌ FAIL"
+    status_icon = "✔ PASS" if passed else " FAIL"
     print(f"[{status_icon}] {step_name}" + (f" — {details}" if details else ""))
 
 
 def run_comprehensive_e2e_test():
     print("\n" + "═" * 75)
-    print("🎬 CINEMASHIELD ↔ AI ENMESH REAL HTTP END-TO-END INTEGRATION TEST")
+    print(" CINEMASHIELD ↔ AI ENMESH REAL HTTP END-TO-END INTEGRATION TEST")
     print("═" * 75)
 
     # ─────────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ def run_comprehensive_e2e_test():
 
         if not os.path.exists(p_disk_path) or not os.path.exists(b_disk_path):
             all_exist_on_disk = False
-            print(f"❌ Shard {sname} missing on physical disk ({p_disk_path} or {b_disk_path})")
+            print(f" Shard {sname} missing on physical disk ({p_disk_path} or {b_disk_path})")
 
     record_result("Real Enmesh storage", all_exist_on_disk, f"Verified 10 primary + 10 backup copies physically stored in {AI_ENMESH_NODES_DIR}")
 
@@ -139,7 +139,7 @@ def run_comprehensive_e2e_test():
     print("\n[STEP 7] Purging Local Shards Directory to Enforce 100% Remote HTTP Retrieval...")
     shutil.rmtree(temp_test_dir)
     assert not os.path.exists(temp_test_dir), "Temp dir still exists"
-    print("✔ Local temporary shards completely deleted from CinemaShield disk.")
+    print(" Local temporary shards completely deleted from CinemaShield disk.")
 
     # ─────────────────────────────────────────────────────────────
     # STEP 8: Retrieve Shards from AI Enmesh over HTTP GET
@@ -170,7 +170,7 @@ def run_comprehensive_e2e_test():
     target_primary = target_shard["routing"]["primary_node"]
     target_backup = target_shard["routing"]["backup_node"]
 
-    print(f"Taking {target_primary} 🔴 OFFLINE on AI Enmesh...")
+    print(f"Taking {target_primary}  OFFLINE on AI Enmesh...")
     set_node_status(target_primary, "OFFLINE")
 
     # Fetch shard: must automatically failover to exact backup node over HTTP
@@ -179,7 +179,7 @@ def run_comprehensive_e2e_test():
 
     # Restore primary node
     set_node_status(target_primary, "ONLINE")
-    print(f"Restored {target_primary} 🟢 ONLINE on AI Enmesh.")
+    print(f"Restored {target_primary}  ONLINE on AI Enmesh.")
 
     record_result("Exact backup failover", True, f"Primary {target_primary} offline → Automatically retrieved {target_id} from exact designated backup {target_backup} over HTTP")
 
@@ -226,18 +226,18 @@ def run_comprehensive_e2e_test():
     # FINAL REPORT
     # ─────────────────────────────────────────────────────────────
     print("\n" + "═" * 75)
-    print("📊 FINAL INTEGRATION TEST REPORT:")
+    print(" FINAL INTEGRATION TEST REPORT:")
     print("═" * 75)
     for test_name, status in RESULTS.items():
-        icon = "✔ PASS" if status == "PASS" else "❌ FAIL"
+        icon = " PASS" if status == "PASS" else " FAIL"
         print(f"  {test_name:<40}: {icon}")
     print("═" * 75)
 
     all_passed = all(s == "PASS" for s in RESULTS.values())
     if all_passed:
-        print("\n🎉 ALL 11 INTEGRATION CRITERIA PASSED 100%!")
+        print("\n ALL 11 INTEGRATION CRITERIA PASSED 100%!")
     else:
-        print("\n❌ SOME TESTS FAILED!")
+        print("\n SOME TESTS FAILED!")
         sys.exit(1)
 
 

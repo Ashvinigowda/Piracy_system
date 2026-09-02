@@ -112,7 +112,7 @@ def shard_video(file_path):
 
     final_shards = [f for f in os.listdir(SHARD_FOLDER) if f.startswith(base_name) and f.endswith(".mp4")]
     elapsed = time.perf_counter() - start
-    print(f"✔ Created {len(final_shards)} shards in {elapsed:.3f}s (High-Throughput Parallel)")
+    print(f" Created {len(final_shards)} shards in {elapsed:.3f}s (High-Throughput Parallel)")
     return len(final_shards)
 
 
@@ -120,17 +120,17 @@ def _process_single(video_path):
     """Process one video: shard then delete original."""
     shard_video(video_path)
     os.remove(video_path)
-    print(f"🗑 Deleted original video: {os.path.basename(video_path)}")
+    print(f" Deleted original video: {os.path.basename(video_path)}")
 
 
 def process_uploads():
     if not os.path.exists(UPLOAD_FOLDER):
-        print(f"⚠ No uploads folder found: {UPLOAD_FOLDER}")
+        print(f"No uploads folder found: {UPLOAD_FOLDER}")
         return
 
     videos = [f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.mp4', '.mkv'))]
     if not videos:
-        print("⚠ No videos found in uploads folder")
+        print(" No videos found in uploads folder")
         return
 
     paths = [os.path.join(UPLOAD_FOLDER, v) for v in videos]
@@ -140,13 +140,13 @@ def process_uploads():
     else:
         # Process multiple videos in parallel
         workers = min(len(paths), os.cpu_count() or 4)
-        print(f"▶ Processing {len(paths)} videos with {workers} workers")
+        print(f" Processing {len(paths)} videos with {workers} workers")
         with ThreadPoolExecutor(max_workers=workers) as pool:
             futures = {pool.submit(_process_single, p): p for p in paths}
             for future in as_completed(futures):
                 future.result()  # propagate exceptions
 
-    print("🏁 All videos processed")
+    print(" All videos processed")
 
 
 if __name__ == "__main__":

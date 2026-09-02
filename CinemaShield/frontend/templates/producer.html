@@ -3,7 +3,7 @@
 
 {% block content %}
 <section class="page-header">
-  <h1>🎥 Studio Ingest &amp; Zero-Trust Distribution</h1>
+  <h1>Studio Ingest &amp; Zero-Trust Distribution</h1>
   <p>Upload a movie to shard, envelope-encrypt (AES-256-GCM), and disperse across the multi-cloud storage mesh.</p>
 </section>
 
@@ -26,7 +26,7 @@
 
   <div id="dropzone" class="dropzone">
     <div class="dropzone-content">
-      <div class="dropzone-icon">📁</div>
+      <div class="dropzone-icon"></div>
       <p>Drag &amp; drop master video or DCP here</p>
       <p class="text-muted">
         or click to browse &mdash; MP4, MKV, AVI, MOV (max 500 MB)
@@ -52,7 +52,7 @@
   </div>
 
   <button id="upload-btn" class="btn btn-primary hidden" style="margin-top: 1.2rem;">
-    🔒 Secure, Shard &amp; Disperse
+     Secure, Shard &amp; Disperse
   </button>
 </div>
 
@@ -91,7 +91,7 @@
     <div class="step" data-step="ai_analysis">
       <div class="step-dot ai-step"></div>
       <div class="step-line"></div>
-      <span>🧠 AI Forensic</span>
+      <span>AI Forensic</span>
     </div>
     <div class="step" data-step="done">
       <div class="step-dot"></div>
@@ -104,7 +104,7 @@
 <!-- ── Success Summary & Multi-Cloud Mesh ─────────────────── -->
 <div id="success-section" class="card hidden">
   <div class="success-header">
-    <span class="success-icon">🛡️</span>
+    <span class="success-icon"></span>
     <h2>Movie Dispersed &amp; Sealed across Zero-Trust Mesh!</h2>
   </div>
 
@@ -140,17 +140,17 @@
   <!-- Master KEK Block -->
   <div class="code-block" style="margin-bottom: 1.5rem;">
     <div class="code-header">
-      <span>🔑 Master KEK (Key Encryption Key Hex)</span>
+      <span> Master KEK (Key Encryption Key Hex)</span>
       <button class="copy-btn" id="copy-key-btn">Copy</button>
     </div>
     <div class="code-content" id="key-display">Generating...</div>
     <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.85rem">
-      🔒 In production, this key is delivered directly to the Theatre's DCI Projector SMB via encrypted KDM without human handling.
+       In production, this key is delivered directly to the Theatre's DCI Projector SMB via encrypted KDM without human handling.
     </p>
   </div>
 
   <!-- Multi-Cloud Shard Distribution Cards -->
-  <h3 style="margin-bottom: 0.8rem;">🌐 Multi-Cloud Storage Mesh Dispersion</h3>
+  <h3 style="margin-bottom: 0.8rem;"> Multi-Cloud Storage Mesh Dispersion</h3>
   <div id="mesh-nodes-grid" class="mesh-grid">
     <!-- Populated via JS -->
   </div>

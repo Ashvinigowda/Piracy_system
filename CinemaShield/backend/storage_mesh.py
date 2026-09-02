@@ -146,7 +146,7 @@ def scatter_shards(encrypted_shards_dir: str) -> Dict[str, Dict[str, Any]]:
     upload_tasks = []
 
     print("\n" + "═" * 65)
-    print("🚀 [CINEMASHIELD → AI ENMESH] Dispersing Encrypted Shards over HTTP")
+    print(" [CINEMASHIELD → AI ENMESH] Dispersing Encrypted Shards over HTTP")
     print("═" * 65)
 
     for idx, shard_file in enumerate(shard_files):
@@ -215,10 +215,10 @@ def fetch_shard_from_mesh(
         try:
             print(f"[HTTP GET] → {p_url} ({primary_node})")
             data = _http_get_shard(primary_node, shard_file)
-            print(f"[{primary_node}]   200 OK — Received {len(data)} bytes ✓")
+            print(f"[{primary_node}]   200 OK — Received {len(data)} bytes ")
             return data
         except Exception as e:
-            print(f"[PRIMARY]  {primary_node} ❌ OFFLINE / UNREACHABLE ({e})")
+            print(f"[PRIMARY]  {primary_node}  OFFLINE / UNREACHABLE ({e})")
             if backup_node:
                 print(f"[FAILOVER] Using designated backup {backup_node} from manifest")
 
@@ -231,7 +231,7 @@ def fetch_shard_from_mesh(
             print(f"[{backup_node}]   200 OK — Failover backup retrieved {len(data)} bytes ✓")
             return data
         except Exception as e:
-            print(f"[BACKUP]   {backup_node} ❌ OFFLINE / UNREACHABLE ({e})")
+            print(f"[BACKUP]   {backup_node}  OFFLINE / UNREACHABLE ({e})")
 
     # 3. Last safety check on remaining nodes
     for nid in AI_ENMESH_NODES:

@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local secrets and runtime logs
+*.key
+audit_log.json
+
+# Generated CinemaShield data
+CinemaShield/backend/uploads/
+CinemaShield/backend/shards/
+CinemaShield/backend/encrypted_shards/
+CinemaShield/frontend/temp/
+
+# AI Enmesh node storage
+AI-Enmesh/nodes/

@@ -26,7 +26,7 @@ from app import app
 
 def run_feature_tests():
     print("=================================================================")
-    print("🧬 FEATURE 1 & 3: A/B FORENSIC SHARDING & REED-SOLOMON TEST SUITE")
+    print(" FEATURE 1 & 3: A/B FORENSIC SHARDING & REED-SOLOMON TEST SUITE")
     print("=================================================================\n")
 
     # ─────────────────────────────────────────────────────────────
@@ -45,7 +45,7 @@ def run_feature_tests():
     
     assert extracted_a["variant"] == "A", "Extracted variant must be A"
     assert extracted_b["variant"] == "B", "Extracted variant must be B"
-    print("✔ A/B Steganographic watermarks successfully embedded and extracted.")
+    print("✔= A/B Steganographic watermarks successfully embedded and extracted.")
 
     # ─────────────────────────────────────────────────────────────
     # TEST 2: THEATRE FORENSIC COMBINATION UNIQUENESS & LEAK TRACER
@@ -70,7 +70,7 @@ def run_feature_tests():
     assert trace_result["matched"] is True
     assert trace_result["best_match"]["theatre_id"] == "THEATRE_002"
     assert trace_result["best_match"]["match_percentage"] == 100.0
-    print(f"✔ Leak Reverse-Lookup Scanner: Correctly identified {trace_result['best_match']['theatre_id']} with 100% confidence!")
+    print(f" Leak Reverse-Lookup Scanner: Correctly identified {trace_result['best_match']['theatre_id']} with 100% confidence!")
 
     # ─────────────────────────────────────────────────────────────
     # TEST 3: REED-SOLOMON GALOIS FIELD ERASURE ENCODING
@@ -87,7 +87,7 @@ def run_feature_tests():
 
     parity_shards = encode_parity_shards(data_shards, parity_count=2)
     assert len(parity_shards) == 2, "Must produce 2 parity shards"
-    print(f"✔ Generated 2 Reed-Solomon parity shards from 6 data shards (Total: {len(data_shards) + len(parity_shards)} shards).")
+    print(f" Generated 2 Reed-Solomon parity shards from 6 data shards (Total: {len(data_shards) + len(parity_shards)} shards).")
 
     # ─────────────────────────────────────────────────────────────
     # TEST 4: MULTI-CLOUD OUTAGE RECOVERY (SELF-HEALING)
@@ -106,7 +106,7 @@ def run_feature_tests():
     recovered = reconstruct_data_shards(surviving_pool, total_data_count=6, parity_count=2)
     for i in range(6):
         assert recovered[i] == data_shards[i], f"Reconstructed data shard {i} must match original bit-for-bit"
-    print("✔ REED-SOLOMON SELF-HEALING SUCCESS: 100% of data shards reconstructed bit-for-bit from parity pool!")
+    print(" REED-SOLOMON SELF-HEALING SUCCESS: 100% of data shards reconstructed bit-for-bit from parity pool!")
 
     # ─────────────────────────────────────────────────────────────
     # TEST 5: FLASK REST ENDPOINTS FOR A/B TRACE & NODE TOGGLE

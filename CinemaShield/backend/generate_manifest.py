@@ -121,7 +121,7 @@ def generate_manifest(
     Generate a cryptographic Merkle Manifest with routing and integrity proofs.
     """
     if not os.path.exists(shards_dir):
-        print(f"⚠ Folder '{shards_dir}' does not exist!")
+        print(f" Folder '{shards_dir}' does not exist!")
         return {}
 
     shard_files = sorted([
@@ -130,7 +130,7 @@ def generate_manifest(
     ])
 
     if not shard_files:
-        print(f"⚠ No encrypted shards found in '{shards_dir}'!")
+        print(f" No encrypted shards found in '{shards_dir}'!")
         return {}
 
     now = datetime.now(timezone.utc)
@@ -188,9 +188,9 @@ def generate_manifest(
     with open(manifest_path, "w") as f:
         json.dump(manifest_data, f, indent=2)
 
-    print(f"✅ Cryptographic Merkle Manifest generated: {manifest_path}")
-    print(f"🌲 Merkle Root: {root_hash}")
-    print(f"📦 Total Sequential Shards: {len(shards_meta)}")
+    print(f" Cryptographic Merkle Manifest generated: {manifest_path}")
+    print(f" Merkle Root: {root_hash}")
+    print(f" Total Sequential Shards: {len(shards_meta)}")
 
     return manifest_data
 
