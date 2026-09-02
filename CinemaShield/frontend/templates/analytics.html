@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}CinemaShield — Security AI &amp; Mesh Monitor{% endblock %}
+
+{% block content %}
+<section class="page-header flex-header">
+  <div>
+    <div class="header-tag">NOC &amp; FORENSIC LAB</div>
+    <h1>🧠 Security AI &amp; Storage Mesh Intelligence</h1>
+    <p>Zero-Trust multi-cloud topology health, real-time threat detection, and forensic watermarking forensics.</p>
+  </div>
+  <button id="refresh-btn" class="btn btn-outline" onclick="loadAll()">
+    🔄 Refresh Telemetry
+  </button>
+</section>
+
+<!-- ── Top Overview Stats ── -->
+<section class="ai-overview">
+  <div class="ai-card ai-card-total">
+    <div class="ai-card-icon">📊</div>
+    <div class="ai-card-body">
+      <div class="ai-card-value" id="total-events">—</div>
+      <div class="ai-card-label">Audit Log Events</div>
+    </div>
+  </div>
+  <div class="ai-card ai-card-recent">
+    <div class="ai-card-icon">☁️</div>
+    <div class="ai-card-body">
+      <div class="ai-card-value" id="total-mesh-nodes">5 Nodes</div>
+      <div class="ai-card-label">Cloud Mesh Health</div>
+    </div>
+  </div>
+  <div class="ai-card ai-card-risk">
+    <div class="ai-card-icon">🛡️</div>
+    <div class="ai-card-body">
+      <div class="ai-card-value" id="risk-level">LOW</div>
+      <div class="ai-card-label">Threat Level</div>
+    </div>
+  </div>
+  <div class="ai-card ai-card-ips">
+    <div class="ai-card-icon">🌐</div>
+    <div class="ai-card-body">
+      <div class="ai-card-value" id="unique-ips">—</div>
+      <div class="ai-card-label">Audited Endpoints</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Multi-Cloud Storage Mesh Topology ────────────── -->
+<section class="ai-section">
+  <h2 class="ai-section-title">🌐 Zero-Trust Multi-Cloud Storage Mesh Topology</h2>
+  <div id="analytics-mesh-grid" class="mesh-grid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ── Threat Detection & Anti-Tamper Filter ── -->
+<div class="analytics-split-grid">
+  <section class="ai-section">
+    <h2 class="ai-section-title">🔍 Threat &amp; Tamper Detection</h2>
+    <div class="ai-threat-bar">
+      <div class="threat-meter">
+        <div class="threat-fill" id="threat-fill" style="width: 0%"></div>
+      </div>
+      <span class="threat-score" id="threat-score">0 / 100</span>
+    </div>
+    <div id="anomaly-list" class="anomaly-list">
+      <p class="empty-state">No anomalies detected — system secure</p>
+    </div>
+  </section>
+
+  <section class="ai-section">
+    <h2 class="ai-section-title">🔑 DCI Hardware Attestation Rate</h2>
+    <div class="auth-stats-row">
+      <div class="auth-stat">
+        <div class="auth-stat-ring" id="auth-ring">
+          <svg viewBox="0 0 36 36" class="ring-svg">
+            <path
+              class="ring-bg"
+              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path
+              class="ring-fill"
+              id="ring-fill"
+              stroke-dasharray="0, 100"
+              d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <text x="18" y="20.5" class="ring-text" id="ring-text">—</text>
+          </svg>
+        </div>
+        <div class="auth-stat-label">Success Rate</div>
+      </div>
+      <div class="auth-stat-details">
+        <div class="auth-detail">
+          <span class="dot dot-success"></span> Authorized:
+          <strong id="auth-success">0</strong>
+        </div>
+        <div class="auth-detail">
+          <span class="dot dot-fail"></span> Denied / Revoked:
+          <strong id="auth-failed">0</strong>
+        </div>
+        <div class="auth-detail">
+          <span class="dot dot-total"></span> Total Sessions:
+          <strong id="auth-total">0</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── Activity Timeline & Event Breakdown ── -->
+<div class="analytics-split-grid">
+  <section class="ai-section">
+    <h2 class="ai-section-title">📈 Activity Timeline (24h)</h2>
+    <div class="timeline-chart" id="timeline-chart"></div>
+    <div class="timeline-labels" id="timeline-labels"></div>
+  </section>
+
+  <section class="ai-section">
+    <h2 class="ai-section-title">📋 Audit Log Event Breakdown</h2>
+    <div class="event-breakdown" id="event-breakdown">
+      <p class="empty-state">No events recorded yet</p>
+    </div>
+  </section>
+</div>
+
+<!-- ── Session Fingerprint Generator (Utility) ──── -->
+<section class="ai-section">
+  <h2 class="ai-section-title">🧬 Dynamic Session Fingerprint Generator</h2>
+  <div class="fingerprint-form">
+    <input
+      type="text"
+      id="fp-theatre"
+      class="input"
+      placeholder="Theatre ID (e.g. THEATRE_001)"
+      value="THEATRE_001"
+    />
+    <input
+      type="text"
+      id="fp-token"
+      class="input"
+      placeholder="Session Token / Nonce"
+      value="demo-session-token"
+    />
+    <button class="btn btn-gold" onclick="generateFingerprint()">
+      Generate Fingerprint
+    </button>
+  </div>
+  <div id="fingerprint-result" class="fingerprint-result" style="display: none">
+    <div class="fp-row">
+      <span class="fp-label">Full Hash</span><code id="fp-hash" class="fp-value"></code>
+    </div>
+    <div class="fp-row">
+      <span class="fp-label">Short ID</span><code id="fp-short" class="fp-value"></code>
+    </div>
+    <div class="fp-row">
+      <span class="fp-label">Traceable</span><span id="fp-trace" class="fp-value"></span>
+    </div>
+    <div class="fp-row">
+      <span class="fp-label">Timestamp</span><span id="fp-time" class="fp-value"></span>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

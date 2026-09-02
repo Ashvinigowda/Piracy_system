@@ -1,0 +1,33 @@
+﻿# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# Mesh Storage Nodes — physical shard files (keep folder, ignore objects)
+nodes/*/*
+!nodes/*/.gitkeep
+*.enc
+*.mp4
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System files
+Thumbs.db
+.DS_Store

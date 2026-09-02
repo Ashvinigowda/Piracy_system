@@ -1,0 +1,176 @@
+{% extends "base.html" %} 
+{% block title %}Studio Ingest — CinemaShield 2.0{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>🎥 Studio Ingest &amp; Zero-Trust Distribution</h1>
+  <p>Upload a movie to shard, envelope-encrypt (AES-256-GCM), and disperse across the multi-cloud storage mesh.</p>
+</section>
+
+<!-- ── Upload Section ────────────────────────── -->
+<div id="upload-section" class="card">
+  <h2>1. Movie Upload &amp; Target DCI Theatre</h2>
+
+  <!-- Theatre ID Selection -->
+  <div class="form-group">
+    <label for="theatre-id">Target DCI Theatre / Projection System</label>
+    <select id="theatre-id" class="input-theatre">
+      <option value="THEATRE_001">THEATRE_001 — IMAX Grand Cinema (Screen 1, Mumbai) [Christie CP4440-RGB Laser]</option>
+      <option value="THEATRE_002">THEATRE_002 — Dolby Cinema @ AMC Burbank 16 (Los Angeles) [Dual-Laser 4K]</option>
+      <option value="THEATRE_003">THEATRE_003 — Odeon Luxe Leicester Square (London) [Dolby IMS3000 / Barco]</option>
+    </select>
+    <span class="text-muted" style="margin-top: 0.3rem; display: block">
+      The package and ephemeral KDM will be cryptographically bound to this theatre's DCI Hardware Certificate.
+    </span>
+  </div>
+
+  <div id="dropzone" class="dropzone">
+    <div class="dropzone-content">
+      <div class="dropzone-icon">📁</div>
+      <p>Drag &amp; drop master video or DCP here</p>
+      <p class="text-muted">
+        or click to browse &mdash; MP4, MKV, AVI, MOV (max 500 MB)
+      </p>
+    </div>
+    <input type="file" id="file-input" accept=".mp4,.mkv,.avi,.mov" hidden />
+  </div>
+  
+  <div id="file-info" class="file-info hidden">
+    <span id="file-name"></span>
+    <span id="file-size"></span>
+    <button id="clear-file" class="btn-icon" title="Remove">&times;</button>
+  </div>
+
+  <!-- Upload progress -->
+  <div id="upload-progress" class="hidden" style="margin-top: 1rem">
+    <div class="progress-bar-wrap">
+      <div id="upload-bar" class="progress-bar progress-bar-upload" style="width: 0%"></div>
+    </div>
+    <p id="upload-percent" class="text-muted" style="text-align: center; font-size: 0.85rem">
+      Uploading 0%
+    </p>
+  </div>
+
+  <button id="upload-btn" class="btn btn-primary hidden" style="margin-top: 1.2rem;">
+    🔒 Secure, Shard &amp; Disperse
+  </button>
+</div>
+
+<!-- ── Pipeline Progress ─────────────── -->
+<div id="pipeline-section" class="card hidden">
+  <h2>2. Zero-Trust Security Pipeline</h2>
+  <div class="progress-bar-wrap">
+    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+  </div>
+  <div class="stepper">
+    <div class="step" data-step="cleanup">
+      <div class="step-dot"></div>
+      <div class="step-line"></div>
+      <span>Prepare</span>
+    </div>
+    <div class="step" data-step="sharding">
+      <div class="step-dot"></div>
+      <div class="step-line"></div>
+      <span>Shard</span>
+    </div>
+    <div class="step" data-step="encrypting">
+      <div class="step-dot"></div>
+      <div class="step-line"></div>
+      <span>AES-GCM</span>
+    </div>
+    <div class="step" data-step="mesh_dispersion">
+      <div class="step-dot"></div>
+      <div class="step-line"></div>
+      <span>Mesh Disperse</span>
+    </div>
+    <div class="step" data-step="manifest">
+      <div class="step-dot"></div>
+      <div class="step-line"></div>
+      <span>Merkle Tree</span>
+    </div>
+    <div class="step" data-step="ai_analysis">
+      <div class="step-dot ai-step"></div>
+      <div class="step-line"></div>
+      <span>🧠 AI Forensic</span>
+    </div>
+    <div class="step" data-step="done">
+      <div class="step-dot"></div>
+      <span>Sealed</span>
+    </div>
+  </div>
+  <div id="pipeline-status" class="pipeline-status">Initialising pipeline...</div>
+</div>
+
+<!-- ── Success Summary & Multi-Cloud Mesh ─────────────────── -->
+<div id="success-section" class="card hidden">
+  <div class="success-header">
+    <span class="success-icon">🛡️</span>
+    <h2>Movie Dispersed &amp; Sealed across Zero-Trust Mesh!</h2>
+  </div>
+
+  <!-- Merkle & Cryptographic Details -->
+  <div class="meta-grid" style="margin: 1.5rem 0;">
+    <div class="meta-item">
+      <span class="meta-label">Total Shards</span>
+      <span class="meta-value" id="res-shards">0</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Encryption</span>
+      <span class="meta-value">AES-256-GCM Envelope</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Target DCI Hardware</span>
+      <span class="meta-value" id="res-theatre">THEATRE_001</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Forensic Fingerprint</span>
+      <span class="meta-value" id="res-fingerprint" style="color: var(--gold); font-family: monospace;">N/A</span>
+    </div>
+  </div>
+
+  <!-- Merkle Root Block -->
+  <div class="code-block" style="margin-bottom: 1.5rem;">
+    <div class="code-header">
+      <span>🌲 Cryptographic Merkle Root (SHA-256)</span>
+      <button class="copy-btn" id="copy-merkle-btn">Copy</button>
+    </div>
+    <div class="code-content" id="merkle-root-display" style="color: #60a5fa;">Generating...</div>
+  </div>
+
+  <!-- Master KEK Block -->
+  <div class="code-block" style="margin-bottom: 1.5rem;">
+    <div class="code-header">
+      <span>🔑 Master KEK (Key Encryption Key Hex)</span>
+      <button class="copy-btn" id="copy-key-btn">Copy</button>
+    </div>
+    <div class="code-content" id="key-display">Generating...</div>
+    <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.85rem">
+      🔒 In production, this key is delivered directly to the Theatre's DCI Projector SMB via encrypted KDM without human handling.
+    </p>
+  </div>
+
+  <!-- Multi-Cloud Shard Distribution Cards -->
+  <h3 style="margin-bottom: 0.8rem;">🌐 Multi-Cloud Storage Mesh Dispersion</h3>
+  <div id="mesh-nodes-grid" class="mesh-grid">
+    <!-- Populated via JS -->
+  </div>
+
+  <div class="btn-group" style="margin-top: 1.8rem">
+    <a href="/theatre" class="btn btn-primary">Go to Theatre Ingest Gateway &rarr;</a>
+    <a href="/analytics" class="btn btn-secondary">View Security AI &amp; Mesh Monitor</a>
+    <button id="upload-another-btn" class="btn btn-outline">Distribute Another Movie</button>
+  </div>
+</div>
+
+<!-- ── History Section ───────────────── -->
+<div class="card" style="margin-top: 1.5rem">
+  <h2>Distribution History</h2>
+  <div id="history-list" class="history-list">
+    <p class="text-muted">No distribution history recorded yet.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/producer.js') }}"></script>
+{% endblock %}

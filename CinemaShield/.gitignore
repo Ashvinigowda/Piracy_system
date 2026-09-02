@@ -1,0 +1,96 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Shards & Encrypted contents (keep folders, ignore files)
+backend/shards/*
+!backend/shards/.gitkeep
+backend/encrypted_shards/*
+!backend/encrypted_shards/.gitkeep
+backend/storage_nodes/*
+!backend/storage_nodes/.gitkeep
+backend/storage_nodes/*/*
+
+# Uploads & Media
+backend/uploads/*
+!backend/uploads/.gitkeep
+*.mp4
+*.mp4.enc
+*.mkv
+*.avi
+*.mov
+*.webm
+test_clip.mp4
+
+# Runtime data & Cryptographic Manifests
+backend/manifest.json
+backend/audit_log.json
+backend/history.json
+
+# Secrets, Keys & Certificates — NEVER COMMIT SECRETS
+*.key
+*.pem
+*.crt
+*.pfx
+backend/secret.key
+backend/producer_signing.key
+
+# Frontend temp & generated files
+frontend/temp/
+frontend/watermarked/
+frontend/static/temp/
+
+# Test temp directories
+test_e2e_temp/
+test_temp_dispersion/
+test_temp_shards/
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Operating System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes

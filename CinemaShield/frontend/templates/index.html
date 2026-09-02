@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}CinemaShield — Zero-Trust Cinema Bridge{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="hero-badge">⚡ NEXT-GEN ZERO-TRUST CINEMA DISTRIBUTION</div>
+  <h1 class="hero-title">
+    Cinema<span class="gradient-text">Shield</span>
+  </h1>
+  <p class="hero-tagline">
+    Zero-Trust Multi-Cloud Distribution Bridge between Film Studios and DCI Theatres
+  </p>
+  <div class="hero-stats-row">
+    <div class="stat-pill">🔒 AES-256-GCM Envelope</div>
+    <div class="stat-pill">🌲 Merkle Tree Integrity</div>
+    <div class="stat-pill">🧬 A/B Leak Fingerprinting</div>
+    <div class="stat-pill">🛡️ Reed-Solomon Self-Healing</div>
+  </div>
+</section>
+
+<!-- ── Portal Role Cards ── -->
+<section class="portals-grid">
+  <a href="/producer" class="portal-card">
+    <div class="portal-icon-wrap" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3);">
+      <span class="portal-icon">🎥</span>
+    </div>
+    <div class="portal-body">
+      <div class="portal-header">
+        <h2>Studio Ingest Portal</h2>
+        <span class="role-chip producer-chip">STUDIO</span>
+      </div>
+      <p>
+        Shard master prints into 1 MB chunks, apply AES-256-GCM envelope encryption, generate A/B forensic variants, and disperse across 5 cloud storage nodes.
+      </p>
+      <span class="portal-action-btn">Launch Ingest Pipeline &rarr;</span>
+    </div>
+  </a>
+
+  <a href="/theatre" class="portal-card">
+    <div class="portal-icon-wrap" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+      <span class="portal-icon">🏛️</span>
+    </div>
+    <div class="portal-body">
+      <div class="portal-header">
+        <h2>Theatre Ingest Gateway</h2>
+        <span class="role-chip theatre-chip">DCI PROJECTOR</span>
+      </div>
+      <p>
+        1-Click DCI hardware attestation, parallel multi-cloud download, Reed-Solomon outage self-healing, and zero-disk in-memory stream decoding.
+      </p>
+      <span class="portal-action-btn">Open Ingest Gateway &rarr;</span>
+    </div>
+  </a>
+
+  <a href="/analytics" class="portal-card">
+    <div class="portal-icon-wrap" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+      <span class="portal-icon">🧠</span>
+    </div>
+    <div class="portal-body">
+      <div class="portal-header">
+        <h2>Security &amp; Mesh AI</h2>
+        <span class="role-chip ai-chip">FORENSICS &amp; NOC</span>
+      </div>
+      <p>
+        Live multi-cloud topology health, real-time threat detection, and the 🚨 Piracy Forensic Reverse-Lookup Scanner to pinpoint leaked clips.
+      </p>
+      <span class="portal-action-btn">Open AI Command Center &rarr;</span>
+    </div>
+  </a>
+</section>
+
+<!-- ── Zero-Trust Flow Architecture ── -->
+<section class="pipeline-overview-section">
+  <div class="section-heading">
+    <span class="section-subtitle">END-TO-END SECURITY ARCHITECTURE</span>
+    <h2>Zero-Trust Cinema Pipeline</h2>
+  </div>
+
+  <div class="architecture-steps">
+    <div class="arch-step">
+      <div class="arch-step-num">01</div>
+      <div class="arch-step-content">
+        <h3>1 MB Sharding &amp; A/B Tagging</h3>
+        <p>Master print is split into micro-shards. Each shard generates Variant A &amp; B with invisible steganographic tags.</p>
+      </div>
+    </div>
+
+    <div class="arch-step">
+      <div class="arch-step-num">02</div>
+      <div class="arch-step-content">
+        <h3>Reed-Solomon RS(6+2) Parity</h3>
+        <p>Mathematical Galois Field parity shards are generated to survive multi-cloud outages with zero data loss.</p>
+      </div>
+    </div>
+
+    <div class="arch-step">
+      <div class="arch-step-num">03</div>
+      <div class="arch-step-content">
+        <h3>Multi-Cloud Mesh Dispersion</h3>
+        <p>Encrypted shards are scattered across AWS S3, Cloudflare R2, Wasabi, Edge PoPs, and Google Cloud.</p>
+      </div>
+    </div>
+
+    <div class="arch-step">
+      <div class="arch-step-num">04</div>
+      <div class="arch-step-content">
+        <h3>Zero-Disk Ingest &amp; Playback</h3>
+        <p>Theatre SMB attestation unlocks ephemeral keys. Shards are reassembled directly in RAM without writing to disk.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Enmesh — Distributed Mesh Monitor</title>
+    <meta name="description" content="AI Enmesh: Real-time distributed storage mesh network visualization and monitoring dashboard.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="12" stroke="url(#lg1)" stroke-width="2" fill="none"/>
+                    <circle cx="14" cy="6" r="2.5" fill="#00f0ff"/>
+                    <circle cx="14" cy="22" r="2.5" fill="#00f0ff"/>
+                    <circle cx="6" cy="14" r="2.5" fill="#00f0ff"/>
+                    <circle cx="22" cy="14" r="2.5" fill="#00f0ff"/>
+                    <line x1="14" y1="6" x2="14" y2="22" stroke="#00f0ff" stroke-width="1" opacity="0.4"/>
+                    <line x1="6" y1="14" x2="22" y2="14" stroke="#00f0ff" stroke-width="1" opacity="0.4"/>
+                    <circle cx="14" cy="14" r="3.5" fill="#00f0ff" opacity="0.8"/>
+                    <defs><linearGradient id="lg1" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#00f0ff"/><stop offset="1" stop-color="#7b61ff"/></linearGradient></defs>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <span class="logo-name">AI Enmesh</span>
+                <span class="logo-sub">Distributed Mesh Monitor</span>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div class="live-indicator" id="liveIndicator">
+                <span class="live-dot"></span>
+                <span class="live-text">LIVE</span>
+            </div>
+            <span class="top-bar-time" id="topBarTime"></span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Network Graph Canvas -->
+        <div class="graph-container" id="graphContainer">
+            <canvas id="meshCanvas"></canvas>
+            <!-- Tooltip (positioned dynamically) -->
+            <div class="node-tooltip" id="nodeTooltip">
+                <div class="tooltip-header">
+                    <span class="tooltip-node-id" id="tooltipNodeId">ENM-01</span>
+                    <span class="tooltip-status-badge" id="tooltipStatusBadge">ONLINE</span>
+                </div>
+                <div class="tooltip-divider"></div>
+                <div class="tooltip-rows">
+                    <div class="tooltip-row"><span class="tooltip-label">Status</span><span class="tooltip-value" id="tooltipStatus">ONLINE</span></div>
+                    <div class="tooltip-row"><span class="tooltip-label">Health</span><span class="tooltip-value" id="tooltipHealth">Healthy</span></div>
+                    <div class="tooltip-row"><span class="tooltip-label">Latency</span><span class="tooltip-value" id="tooltipLatency">15 ms</span></div>
+                    <div class="tooltip-row tooltip-divider-light"></div>
+                    <div class="tooltip-row"><span class="tooltip-label">Stored Shards</span><span class="tooltip-value" id="tooltipShards">0</span></div>
+                    <div class="tooltip-row"><span class="tooltip-label">Movies</span><span class="tooltip-value" id="tooltipMovies">0</span></div>
+                </div>
+                <div class="tooltip-footer" id="tooltipFooter"></div>
+            </div>
+        </div>
+
+        <!-- Status Panel -->
+        <aside class="status-panel" id="statusPanel">
+            <div class="panel-header">
+                <span class="panel-title">MESH STATUS</span>
+                <span class="panel-indicator" id="panelIndicator"></span>
+            </div>
+
+            <div class="stat-group">
+                <div class="stat-item">
+                    <span class="stat-value" id="statTotalNodes">5</span>
+                    <span class="stat-label">Nodes</span>
+                </div>
+                <div class="stat-item stat-online">
+                    <span class="stat-value" id="statOnline">0</span>
+                    <span class="stat-label">Online</span>
+                </div>
+                <div class="stat-item stat-offline">
+                    <span class="stat-value" id="statOffline">0</span>
+                    <span class="stat-label">Offline</span>
+                </div>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="stat-group">
+                <div class="stat-item">
+                    <span class="stat-value" id="statShards">0</span>
+                    <span class="stat-label">Total Shards</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statMovies">0</span>
+                    <span class="stat-label">Movies</span>
+                </div>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="stat-group">
+                <div class="stat-item network-status-item">
+                    <span class="stat-label">Network</span>
+                    <span class="stat-value network-status" id="statNetwork">—</span>
+                </div>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="node-list" id="nodeList">
+                <!-- Populated by JS -->
+            </div>
+        </aside>
+    </main>
+
+    <script src="js/graph.js"></script>
+    <script src="js/telemetry.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
