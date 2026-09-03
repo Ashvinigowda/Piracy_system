@@ -123,3 +123,59 @@ Secure Retrieval
 In-Memory Decryption
      ↓
 Zero-Disk Playback
+
+                         ┌─────────────────────────┐
+                         │     Studio / Producer   │
+                         │      Master Video       │
+                         └────────────┬────────────┘
+                                      │
+                                      ▼
+                         ┌─────────────────────────┐
+                         │     CinemaShield 2.0    │
+                         │       Port 5000         │
+                         ├─────────────────────────┤
+                         │ FFmpeg Sharding         │
+                         │ AES-256-GCM Encryption  │
+                         │ Merkle Manifest         │
+                         │ KMS / DCI Attestation   │
+                         │ Theatre Gateway         │
+                         └────────────┬────────────┘
+                                      │
+                               HTTP REST PUT / GET
+                                      │
+                    ┌─────────────────┴─────────────────┐
+                    │                                   │
+                    ▼                                   ▼
+          ┌───────────────────┐             ┌────────────────────┐
+          │    AI Enmesh      │             │ Theatre Gateway    │
+          │ Controller :6100   │             │ Integrity + RAM    │
+          └─────────┬─────────┘             │ Playback           │
+                    │                       └────────────────────┘
+          ┌─────────┼─────────┬─────────┬─────────┐
+          ▼         ▼         ▼         ▼         ▼
+       ENM-01    ENM-02    ENM-03    ENM-04    ENM-05
+       :8001     :8002     :8003     :8004     :8005
+
+Master Video
+     ↓
+FFmpeg Sharding
+     ↓
+AES-256-GCM Envelope Encryption
+     ↓
+Balanced + Randomized Mesh Dispersion
+     ↓
+Merkle Tree + HMAC-SHA256 Manifest
+     ↓
+Encrypted Shards Stored Across ENM-01 ... ENM-05
+     ↓
+Theatre DCI Attestation
+     ↓
+Primary Shard Retrieval
+     ↓
+Backup Failover if Primary Is Offline
+     ↓
+SHA-256 + Merkle Proof Verification
+     ↓
+AES-256-GCM Decryption in RAM
+     ↓
+Zero-Disk In-Memory Video Playback
