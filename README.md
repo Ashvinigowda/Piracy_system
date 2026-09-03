@@ -1,38 +1,38 @@
-🎬 CinemaShield 2.0 & AI Enmesh
+ CinemaShield 2.0 & AI Enmesh
 
 Zero-Trust Theatrical Digital Cinema Distribution & Decentralized Storage Mesh
 
 CinemaShield 2.0 and AI Enmesh are two decoupled systems that work together to demonstrate a secure theatrical digital cinema distribution pipeline. CinemaShield handles studio ingest, video sharding, encryption, integrity verification, theatre authentication, and in-memory playback, while AI Enmesh provides a five-node distributed object-storage mesh with telemetry and failover simulation.
 
-✨ Key Features
+ Key Features
 
-🔐 AES-256-GCM envelope encryption with per-shard ephemeral 256-bit DEKs
+ AES-256-GCM envelope encryption with per-shard ephemeral 256-bit DEKs
 
-🧩 Sequential video sharding using FFmpeg stream-copy processing
+ Sequential video sharding using FFmpeg stream-copy processing
 
-🌳 SHA-256 Merkle tree integrity verification with per-shard proof paths
+ SHA-256 Merkle tree integrity verification with per-shard proof paths
 
-✍️ HMAC-SHA256 signed manifests
+ HMAC-SHA256 signed manifests
 
-🌐 Five-node distributed storage mesh (ENM-01–ENM-05)
+ Five-node distributed storage mesh (ENM-01–ENM-05)
 
-⚖️ Balanced and randomized shard dispersion
+ Balanced and randomized shard dispersion
 
-🔁 Designated backup-node failover when a primary node is unavailable
+ Designated backup-node failover when a primary node is unavailable
 
-🏛️ DCI hardware certificate attestation and time-bounded session authorization
+ DCI hardware certificate attestation and time-bounded session authorization
 
-💾 Zero-disk in-memory playback: decrypted video is assembled and streamed from volatile memory according to the project design
+ Zero-disk in-memory playback: decrypted video is assembled and streamed from volatile memory according to the project design
 
-🕵️ Dynamic forensic session watermarking
+ Dynamic forensic session watermarking
 
-📡 Real-time telemetry and topology visualization
+ Real-time telemetry and topology visualization
 
-🧪 Automated end-to-end integration testing
+ Automated end-to-end integration testing
 
-🚨 Simulated storage-node outages for disaster/failover testing
+ Simulated storage-node outages for disaster/failover testing
 
-🧠 Why CinemaShield?
+ Why CinemaShield?
 
 The project addresses three challenges described in the project specification:
 
@@ -44,7 +44,7 @@ Local media exposure — conventional theatre workflows may leave decrypted or p
 
 CinemaShield and AI Enmesh instead divide the movie into encrypted shards, distribute those encrypted shards across independent storage nodes, verify integrity using cryptographic proofs, and retrieve/decrypt the content for playback through the theatre gateway.
 
-🏗️ Architecture
+ Architecture
 
 The system is split into two independently running applications communicating through HTTP REST APIs:
 
@@ -106,7 +106,7 @@ AES-256-GCM Decryption in RAM
     ↓
 Zero-Disk In-Memory Video Playback
 
-🔐 Security Design
+ Security Design
 
 AES-256-GCM envelope encryption
 
@@ -137,7 +137,7 @@ Forensic watermarking
 
 The project generates a session fingerprint using theatre/session information and renders a dynamic forensic watermark over the playback interface.
 
-🌐 AI Enmesh Storage Mesh
+ AI Enmesh Storage Mesh
 
 AI Enmesh provides five autonomous HTTP storage-node microservices:
 
@@ -187,7 +187,7 @@ DELETE /api/v1/objects/<key>
 
 Each shard has a primary node and a designated backup node. If the primary node becomes unavailable, CinemaShield retrieves the encrypted shard from its designated backup.
 
-🛠️ Technology Stack
+ Technology Stack
 
 Category
 
@@ -239,7 +239,7 @@ DCI attestation, ephemeral KDM/session authorization, forensic watermarking
 
 The documented dependency requirements include Flask, Flask-CORS, cryptography, and Werkzeug. FFmpeg/FFprobe must also be available through the system PATH.
 
-📁 Project Structure
+ Project Structure
 
 ignite/
 ├── CinemaShield/
@@ -275,7 +275,7 @@ ignite/
         ├── ENM-04/
         └── ENM-05/
 
-💻 Requirements
+ Requirements
 
 Software
 
@@ -307,7 +307,7 @@ Local loopback networking
 
 16 GB RAM or higher is recommended for concurrent services and the documented in-memory playback design.
 
-🚀 Installation & Running
+ Installation & Running
 
 1. Install CinemaShield dependencies
 
@@ -346,7 +346,7 @@ Producer   → http://localhost:5000/producer
 Theatre    → http://localhost:5000/theatre
 Analytics  → http://localhost:5000/analytics
 
-🎬 Demo Workflow
+ Demo Workflow
 
 Open the AI Enmesh dashboard at http://localhost:6100.
 
@@ -372,7 +372,7 @@ Observe integrity verification, retrieval, decryption, and playback.
 
 Optionally take one storage node offline and verify designated-backup failover.
 
-🧪 Testing
+ Testing
 
 Run the documented end-to-end integration test:
 
@@ -408,7 +408,7 @@ In-memory reassembly
 
 Playback readiness
 
-🚨 Failover Demonstration
+ Failover Demonstration
 
 AI Enmesh supports simulated node outages.
 
@@ -416,7 +416,7 @@ For example, take ENM-02 offline from the Theatre Gateway or dashboard, then run
 
 The project documentation demonstrates this with a primary ENM-02 failure followed by retrieval from backup ENM-04.
 
-📸 Screenshots
+ Screenshots
 
 The project includes screenshots demonstrating:
 
@@ -444,7 +444,7 @@ docs/images/
 
 and add them to this section when the final screenshots are selected.
 
-📚 Documentation
+ Documentation
 
 The project documentation covers:
 
@@ -464,7 +464,7 @@ Failover simulation
 
 Security and cryptographic design
 
-⚠️ Security / Repository Notes
+Security / Repository Notes
 
 Do not commit sensitive or generated material to GitHub, including:
 
@@ -488,7 +488,7 @@ Python virtual environments
 
 Use environment variables or local configuration for secrets where applicable.
 
-👩‍💻 Project
+ Project
 
 CinemaShield 2.0 & AI Enmesh
 
