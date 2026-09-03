@@ -1,11 +1,14 @@
-.venv/
+venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 
 # Local secrets and runtime logs
 *.key
+.env
+.env.*
 audit_log.json
+*.log
 
 # Generated CinemaShield data
 CinemaShield/backend/uploads/
