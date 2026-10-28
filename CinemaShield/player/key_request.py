@@ -20,16 +20,19 @@ def request_kdm_license(theatre_id: str = "THEATRE_001", cert_fingerprint: str =
 
 def request_key(theatre_id: str = "THEATRE_001") -> bytes:
     """
-    Backwards-compatible key retrieval function returning raw key bytes.
+    Return key bytes only after successful KMS authorization.
+    Never fall back to reading the master key file directly.
     """
     success, kdm = request_kdm_license(theatre_id)
-    if success and "master_kek_hex" in kdm:
-        return bytes.fromhex(kdm["master_kek_hex"])
-    
-    # Fallback to direct key file if exists
-    key_path = os.path.join(BACKEND_DIR, "secret.key")
-    if os.path.exists(key_path):
-        with open(key_path, "rb") as f:
-            return f.read()
 
-    raise PermissionError("Failed to acquire authorized KDM from KMS Broker")
+    if not success:
+        raise PermissionError("KMS authorization failed; key not issued.")
+
+    key_hex = kdm.get("_master_kek_hex")
+    if not isinstance(key_hex, str) or not key_hex:
+        raise PermissionError("KMS response did not contain an authorized key.")
+
+    try:
+        return bytes.fromhex(key_hex)
+    except ValueError as exc:
+        raise PermissionError("KMS returned an invalid key encoding.") from exc

@@ -89,16 +89,25 @@ def list_registered_theatres() -> Dict[str, Any]:
     return THEATRE_REGISTRY
 
 
+
 def validate_dci_attestation(theatre_id: str, cert_fingerprint: Optional[str] = None) -> Tuple[bool, str]:
     """Validate DCI hardware security block certificate."""
     theatre = THEATRE_REGISTRY.get(theatre_id)
+
     if not theatre:
         return False, f"Unknown theatre ID '{theatre_id}'. Not in DCI trusted registry."
+
     if theatre["status"] != "AUTHORIZED":
         return False, f"Theatre '{theatre_id}' is flagged as {theatre['status']} (Revoked/Suspended)."
-    if cert_fingerprint and cert_fingerprint != theatre["cert_fingerprint"]:
+
+    if not cert_fingerprint:
+        return False, "Missing hardware certificate fingerprint."
+
+    if cert_fingerprint != theatre["cert_fingerprint"]:
         return False, "Hardware certificate fingerprint mismatch! Potential hardware spoofing attack."
+
     return True, "DCI Hardware Attestation Valid"
+
 
 
 def check_playback_window(manifest_path: str = MANIFEST_PATH) -> Tuple[bool, str]:
@@ -186,7 +195,8 @@ def issue_ephemeral_kdm(
         "ip": client_ip
     })
 
-    return True, kdm_package
+    master_kek_hex = kdm_package.pop("master_kek_hex")
+    return True, {**kdm_package, "_master_kek_hex": master_kek_hex}
 
 
 def revoke_session(session_token: str, reason: str = "Manual Revocation") -> bool:

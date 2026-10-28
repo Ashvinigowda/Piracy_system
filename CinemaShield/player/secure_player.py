@@ -79,7 +79,7 @@ def play_zero_disk_stream(theatre_id: str = THEATRE_ID):
     print(f"   Projector SMB: {kdm['projector_smb']}")
     print(f"   Expires At: {kdm['expires_at']}")
 
-    master_kek = bytes.fromhex(kdm["master_kek_hex"])
+    master_kek = bytes.fromhex(kdm["_master_kek_hex"])
 
     # 3. Merkle Integrity Verification
     if not verify_merkle_shards(manifest):

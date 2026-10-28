@@ -78,7 +78,7 @@ atexit.register(lambda: shutil.rmtree(TEMP_DIR, ignore_errors=True))
 
 # In-memory stores
 movies = {}
-prepared_videos = {}  # token -> {filepath, expires, theatre_id, kdm_id}
+prepared_videos = {}  # token -> stream metadata, including optional KMS session reference
 upload_history = []   # list of processed movies
 
 
@@ -394,8 +394,9 @@ def process_movie(movie_id):
             yield f"data: {json.dumps({'step': 'encrypting', 'message': 'Applying AES-256-GCM Envelope Encryption (per-shard DEK + Master KEK)...', 'progress': 45})}\n\n"
             master_kek = load_or_create_master_kek(KEY_PATH)
             encrypt_all_shards(shards_dir=SHARD_DIR, encrypted_dir=ENCRYPTED_DIR, key_path=KEY_PATH)
-            master_kek_hex = master_kek.hex()
-            movie['key'] = master_kek_hex
+            # Keep the master key in server-side memory only.
+            # Never store or expose its hexadecimal representation in producer responses.
+            movie.pop('key', None)
             audit_log('ENCRYPT_AES_GCM', {'movie_id': movie_id, 'algorithm': 'AES-256-GCM-ENVELOPE'})
             yield f"data: {json.dumps({'step': 'encrypting_done', 'message': 'All shards sealed with AES-256-GCM authenticated encryption', 'progress': 60})}\n\n"
 
@@ -449,7 +450,6 @@ def process_movie(movie_id):
                 'shards': len(manifest['shards']),
                 'merkle_root': merkle_root,
                 'processed_at': datetime.now(timezone.utc).isoformat(),
-                'key': movie['key']
             })
 
             audit_log('PIPELINE_COMPLETE', {'movie_id': movie_id, 'merkle_root': merkle_root})
@@ -457,7 +457,6 @@ def process_movie(movie_id):
                 'step': 'done',
                 'message': 'Zero-Trust Distribution Complete!',
                 'progress': 100,
-                'key': movie['key'],
                 'merkle_root': merkle_root,
                 'shards': len(manifest['shards']),
                 'mesh': mesh_status
@@ -542,7 +541,18 @@ def api_request_kdm():
     success, result = issue_ephemeral_kdm(theatre_id, cert_fingerprint, client_ip=request.remote_addr)
     if not success:
         return jsonify(result), 403
-    return jsonify(result)
+    # Never expose master encryption keys through the public API.
+    # Keep master keys and session credentials out of the public response.
+    sensitive_fields = {
+        "master_kek_hex",
+        "_master_kek_hex",
+        "session_token",
+    }
+    public_result = {
+        k: v for k, v in result.items()
+        if k not in sensitive_fields
+    }
+    return jsonify(public_result)
 
 
 @app.route('/api/storage-mesh/node-toggle', methods=['POST'])
@@ -625,75 +635,103 @@ def api_theatre_ingest_simulate():
     })
 
 
+
 @app.route('/api/authenticate', methods=['POST'])
 def authenticate():
-    """
-    Authenticate via either:
-    1. Automated DCI Hardware Attestation (theatre_id + cert), OR
-    2. Master KEK / KDM Token.
-    """
-    data = request.get_json() or {}
-    key_input = data.get('key', '').strip()
-    theatre_id = data.get('theatre_id', 'THEATRE_001').strip().upper()
+    """Authenticate the theatre through KMS; never accept a client-supplied key."""
+    data = request.get_json(silent=True) or {}
+
+    theatre_id = data.get('theatre_id', 'THEATRE_001')
     cert_fp = data.get('cert_fingerprint')
 
+    if not isinstance(theatre_id, str) or not theatre_id.strip():
+        return jsonify({'error': 'Invalid theatre ID'}), 400
+
+    theatre_id = theatre_id.strip().upper()
+
+    # Reject attempts to provide the Master KEK directly.
+    if 'key' in data:
+        audit_log('PLAYBACK_AUTH_REJECTED', {
+            'theatre_id': theatre_id,
+            'reason': 'Manual key authentication disabled'
+        })
+        return jsonify({
+            'error': 'Manual key authentication is disabled. Use KMS attestation.'
+        }), 403
+
     if not os.path.exists(MANIFEST_PATH):
-        return jsonify({'error': 'No movie available. Ask the producer to upload first.'}), 404
+        return jsonify({
+            'error': 'No movie available. Ask the producer to upload first.'
+        }), 404
 
     try:
         manifest = load_manifest()
 
-        # Check playback window
+        # Validate the playback window before issuing a KMS session.
         valid_window, window_msg = check_playback_window(MANIFEST_PATH)
         if not valid_window:
             return jsonify({'error': window_msg}), 403
 
-        # Resolve Master KEK bytes
-        master_kek_bytes = None
-        kdm_id = None
+        # Validate the registered theatre certificate and issue a KMS session.
+        success, kdm = issue_ephemeral_kdm(
+            theatre_id,
+            cert_fp,
+            client_ip=request.remote_addr
+        )
 
-        if key_input:
-            # User or automated client provided key (hex or Fernet base64)
-            try:
-                # Try hex first (AES-256-GCM Master KEK)
-                master_kek_bytes = bytes.fromhex(key_input)
-            except ValueError:
-                master_kek_bytes = key_input.encode('utf-8')
-        else:
-            # Hardware attestation flow via KMS
-            success, kdm = issue_ephemeral_kdm(theatre_id, cert_fp, client_ip=request.remote_addr)
-            if not success:
-                return jsonify({'error': kdm.get('error', 'KMS authentication failed')}), 403
-            master_kek_bytes = bytes.fromhex(kdm['master_kek_hex'])
-            kdm_id = kdm['kdm_id']
+        if not success:
+            return jsonify({
+                'error': kdm.get('error', 'KMS authentication failed')
+            }), 403
 
-        # Zero-Disk Stream Preparation with Theatre A/B variant selection
+        # Keep the key server-side. Never send it to the browser.
+        master_kek_bytes = bytes.fromhex(kdm['_master_kek_hex'])
+        kdm_id = kdm['kdm_id']
+        kms_session_token = kdm['session_token']
+        kms_session_expires = kdm['expires_at']
+
         token = uuid.uuid4().hex
         output_path = os.path.join(TEMP_DIR, f'{token}.mp4')
-        prepare_in_memory_stream(master_kek_bytes, output_path, target_theatre_id=theatre_id)
+
+        prepare_in_memory_stream(
+            master_kek_bytes,
+            output_path,
+            target_theatre_id=theatre_id
+        )
 
         window = manifest['playback_window']
         end = parse_iso(window['end'])
         now = datetime.now(timezone.utc)
-        time_remaining = max(0, int((end - now).total_seconds() / 60))
+        time_remaining = max(
+            0, int((end - now).total_seconds() / 60)
+        )
 
         prepared_videos[token] = {
             'filepath': output_path,
             'expires': end.isoformat(),
             'theatre_id': theatre_id,
-            'kdm_id': kdm_id or 'DIRECT_KEY'
+            'kdm_id': kdm_id,
+            'kms_session_token': kms_session_token,
+            'kms_session_expires': kms_session_expires
         }
 
-        # Clean old streams
+        # Remove older prepared streams and their output files.
         for old_token in list(prepared_videos.keys()):
             if old_token != token:
                 old_info = prepared_videos.pop(old_token, None)
-                if old_info and os.path.exists(old_info['filepath']):
-                    os.remove(old_info['filepath'])
+                if old_info:
+                    old_path = old_info.get('filepath')
+                    if old_path and os.path.exists(old_path):
+                        try:
+                            os.remove(old_path)
+                        except OSError:
+                            app.logger.warning(
+                                'Could not remove an expired stream file'
+                            )
 
         audit_log('PLAYBACK_AUTH', {
             'theatre_id': theatre_id,
-            'kdm_id': kdm_id or 'DIRECT_KEY',
+            'kdm_id': kdm_id,
             'time_remaining_min': time_remaining
         })
 
@@ -706,34 +744,92 @@ def authenticate():
                 'merkle_root': manifest.get('merkle_root', 'N/A'),
                 'time_remaining': f'{time_remaining} min',
                 'window_end': end.isoformat(),
-                'kdm_id': kdm_id or 'DIRECT_KEY'
+                'kdm_id': kdm_id
             }
         })
 
-    except Exception as e:
-        err = str(e)
-        audit_log('PLAYBACK_FAILED', {'error': err})
-        return jsonify({'error': f'Authentication & Decryption failed: {err}'}), 500
+    except Exception:
+        app.logger.exception('Theatre authentication or playback preparation failed')
+        audit_log('PLAYBACK_FAILED', {
+            'theatre_id': theatre_id,
+            'reason': 'Internal authentication or playback error'
+        })
+        return jsonify({
+            'error': 'Authentication or playback preparation failed.'
+        }), 500
 
 
-@app.route('/api/stream/<token>')
+
+@app.route('/api/stream/<token>', methods=['GET', 'DELETE'])
 def stream_video(token):
-    """Serve the prepared zero-disk stream with byte-range seek support."""
+    """Serve the stream or revoke playback access."""
     info = prepared_videos.get(token)
-    if not info or not os.path.exists(info['filepath']):
+
+    if not info:
         return 'Video stream not found or session expired', 404
 
+    # DELETE: revoke this stream and its associated KMS session.
+    if request.method == 'DELETE':
+        prepared_videos.pop(token, None)
+
+        session_token = info.get('kms_session_token')
+        if session_token:
+            try:
+                revoke_session(session_token, 'Playback ended by theatre')
+            except Exception:
+                app.logger.exception('Failed to revoke KMS session')
+
+        filepath = info.get('filepath')
+        if filepath and os.path.exists(filepath):
+            try:
+                os.remove(filepath)
+            except OSError:
+                app.logger.warning('Could not remove ended playback file')
+
+        audit_log('PLAYBACK_ENDED', {
+            'theatre_id': info.get('theatre_id')
+        })
+        return jsonify({'success': True, 'message': 'Playback ended'}), 200
+
+    # GET: validate the stream file.
+    filepath = info.get('filepath')
+    if not filepath or not os.path.exists(filepath):
+        prepared_videos.pop(token, None)
+        return 'Video stream not found or session expired', 404
+
+    # KMS-backed playback must have an active, unexpired session.
+    session_token = info.get('kms_session_token')
+    if session_token:
+        session_info = ACTIVE_SESSIONS.get(session_token)
+        if not session_info:
+            return 'KMS session revoked or not found', 403
+
+        session_expires = session_info.get('expires_at')
+        if not session_expires or datetime.now(timezone.utc) >= session_expires:
+            ACTIVE_SESSIONS.pop(session_token, None)
+            try:
+                os.remove(filepath)
+            except OSError:
+                pass
+            prepared_videos.pop(token, None)
+            audit_log('KMS_SESSION_EXPIRED', {
+                'theatre_id': info.get('theatre_id')
+            })
+            return 'KMS session expired', 403
+
+    # Enforce the playback window.
     if info.get('expires'):
         expires = parse_iso(info['expires'])
         if datetime.now(timezone.utc) > expires:
-            if os.path.exists(info['filepath']):
-                os.remove(info['filepath'])
+            try:
+                os.remove(filepath)
+            except OSError:
+                pass
             prepared_videos.pop(token, None)
             audit_log('STREAM_EXPIRED', {'token': token[:8]})
             return 'Playback window expired', 403
 
-    return send_file(info['filepath'], mimetype='video/mp4', conditional=True)
-
+    return send_file(filepath, mimetype='video/mp4', conditional=True)
 
 @app.route('/api/status')
 def system_status():
@@ -833,7 +929,7 @@ def ai_analytics_summary():
 
 
 if __name__ == '__main__':
-    print('\n  \033[33m🎬  CinemaShield 2.0 — Zero-Trust Cinema Bridge\033[0m')
+    print('\n  \033[33m  CinemaShield 2.0 — Zero-Trust Cinema Bridge\033[0m')
     print('  ──────────────────────────────────────────────────')
     print('  Home     : http://localhost:5000')
     print('  Producer : http://localhost:5000/producer')

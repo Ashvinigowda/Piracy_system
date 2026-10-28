@@ -1,54 +1,101 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}CinemaShield — Zero-Trust Cinema Bridge{% endblock %}</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CinemaShield | Security Command Center{% endblock %}</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
-  </head>
-  <body>
-    <!-- ── Glassmorphic Navbar ── -->
-    <header class="navbar-wrap">
-      <nav class="navbar">
-        <a href="/" class="nav-brand">
-          <div class="brand-logo-glow"></div>
-          <div class="brand-text">
-            <span>Cinema<strong>Shield</strong></span>
-            <!-- <span class="brand-badge">2.0 ZERO-TRUST</span> -->
-          </div>
-        </a>
-        <div class="nav-links">
-          <a href="/producer" class="nav-link {% if request.path == '/producer' %}active{% endif %}">
-            <span class="nav-icon"></span> Studio Ingest
-          </a>
-          <a href="/theatre" class="nav-link {% if request.path == '/theatre' %}active{% endif %}">
-            <span class="nav-icon"></span> Theatre Gateway
-          </a>
-          <a href="/analytics" class="nav-link {% if request.path == '/analytics' %}active{% endif %}">
-            <span class="nav-icon"></span> Security &amp; Mesh AI
-          </a>
-        </div>
-      </nav>
-    </header>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/redesign.css') }}">
+</head>
 
-    <main class="container">{% block content %}{% endblock %}</main>
+<body class="command-center">
+    <div class="app-shell">
 
-    <footer class="footer">
-      <div class="footer-content">
-        <p><strong>CinemaShield 2.0</strong> &bull; Zero-Trust Multi-Cloud Cinema Distribution Pipeline &bull; DCI Compliant</p>
-        <div class="footer-tags">
-          <span class="footer-tag">AES-256-GCM</span>
-          <span class="footer-tag">A/B Forensic Watermarking</span>
-          <span class="footer-tag">Reed-Solomon RS(6+2)</span>
-          <span class="footer-tag">Merkle Tree Verified</span>
+        <aside class="command-sidebar">
+            <a href="/" class="command-brand">
+                <span class="command-brand-mark">CS</span>
+                <span class="command-brand-name">
+                    Cinema<strong>Shield</strong>
+                    <small>SECURITY PLATFORM</small>
+                </span>
+            </a>
+
+            <div class="sidebar-section-label">WORKSPACE</div>
+
+            <nav class="command-nav" aria-label="Main navigation">
+                <a href="/" class="command-nav-link {% if request.path == '/' %}active{% endif %}">
+                    <span class="command-nav-indicator"></span>
+                    <span>Overview</span>
+                </a>
+
+                <a href="/producer" class="command-nav-link {% if request.path == '/producer' %}active{% endif %}">
+                    <span class="command-nav-indicator"></span>
+                    <span>Studio Ingest</span>
+                </a>
+
+                <a href="/theatre" class="command-nav-link {% if request.path == '/theatre' %}active{% endif %}">
+                    <span class="command-nav-indicator"></span>
+                    <span>Theatre Gateway</span>
+                </a>
+
+                <a href="/analytics" class="command-nav-link {% if request.path == '/analytics' %}active{% endif %}">
+                    <span class="command-nav-indicator"></span>
+                    <span>Security &amp; Mesh AI</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section-label sidebar-section-secondary">SECURITY MODULES</div>
+
+            <div class="sidebar-module">
+                <span class="module-dot module-blue"></span>
+                <span>Encrypted Distribution</span>
+            </div>
+            <div class="sidebar-module">
+                <span class="module-dot module-violet"></span>
+                <span>Integrity Verification</span>
+            </div>
+            <div class="sidebar-module">
+                <span class="module-dot module-gold"></span>
+                <span>Access Control</span>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-version">CINEMASHIELD 2.0</div>
+                <div class="sidebar-caption">Zero-trust distribution</div>
+            </div>
+        </aside>
+
+        <div class="command-main">
+            <header class="command-topbar">
+                <div class="topbar-context">
+                    <span class="topbar-overline">SECURITY OPERATIONS</span>
+                    <span class="topbar-title">Command Center</span>
+                </div>
+
+                <div class="topbar-right">
+                    <span class="topbar-status-dot"></span>
+                    <span class="topbar-status-label">PLATFORM INTERFACE</span>
+                </div>
+            </header>
+
+            <main class="command-content">
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="command-footer">
+                <span>CinemaShield <strong>2.0</strong></span>
+                <span>AES-256-GCM &middot; Forensic Watermarking &middot; Merkle Integrity</span>
+            </footer>
         </div>
-      </div>
-    </footer>
+
+    </div>
 
     {% block scripts %}{% endblock %}
-  </body>
+</body>
 </html>

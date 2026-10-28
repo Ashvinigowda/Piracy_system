@@ -101,7 +101,7 @@ def run_all_tests():
 
     # 6. Test In-Memory Zero-Disk Shard Retrieval & Decryption
     print("\n[6/6] Testing Zero-Disk In-Memory Decryption Pipeline...")
-    kdm_kek = bytes.fromhex(kdm["master_kek_hex"])
+    kdm_kek = bytes.fromhex(kdm["_master_kek_hex"])
     for i, s in enumerate(manifest["shards"]):
         shard_id = s["id"]
         # Fetch from mesh

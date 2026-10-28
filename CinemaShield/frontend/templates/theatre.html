@@ -14,6 +14,76 @@
   <span id="status-text">Checking mesh distribution status...</span>
 </div>
 
+
+<!-- KMS Attestation and Secure Ingest -->
+<div id="auth-section" class="card">
+  <div class="card-header-row">
+    <h2>DCI Hardware Attestation</h2>
+    <span class="badge-tag">KMS AUTHENTICATION</span>
+  </div>
+
+  <p>
+    Authenticate the registered theatre through the Key Management
+    Service before requesting playback access.
+  </p>
+
+  <div style="margin-bottom: 1.2rem;">
+    <label for="theatre-select">Registered Theatre</label>
+    <select id="theatre-select">
+      <option value="THEATRE_001" selected>
+        THEATRE_001 — IMAX Grand Cinema
+      </option>
+      <option value="THEATRE_002">THEATRE_002</option>
+      <option value="THEATRE_003">THEATRE_003</option>
+    </select>
+    <button type="button" class="btn btn-primary" id="auto-attest-btn">
+      Authenticate &amp; Play Movie
+    </button>
+  </div>
+
+  <div class="outage-simulator-card" style="margin-top: 1.5rem;">
+    <div class="outage-sim-header">
+      <div>
+        <strong>
+          AI Enmesh Distributed Storage Mesh
+        </strong>
+        <p class="text-muted">
+          Storage nodes hosted on AI Enmesh (Ports 8001–8005).
+        </p>
+      </div>
+      <span class="badge-active" id="enmesh-conn-badge">
+        AI ENMESH CONNECTED
+      </span>
+    </div>
+
+    <div id="outage-toggle-buttons" class="node-toggle-grid">
+      <button type="button" class="node-toggle-btn active" data-node="ENM-01">ENM-01 <span>ONLINE</span></button>
+      <button type="button" class="node-toggle-btn active" data-node="ENM-02">ENM-02 <span>ONLINE</span></button>
+      <button type="button" class="node-toggle-btn active" data-node="ENM-03">ENM-03 <span>ONLINE</span></button>
+      <button type="button" class="node-toggle-btn active" data-node="ENM-04">ENM-04 <span>ONLINE</span></button>
+      <button type="button" class="node-toggle-btn active" data-node="ENM-05">ENM-05 <span>ONLINE</span></button>
+    </div>
+  </div>
+
+  <div id="auth-error" class="error-msg hidden" style="margin-top: 1rem;"></div>
+
+  <div id="auth-loading" class="hidden loading-container">
+    <div class="spinner"></div>
+    <div class="loading-text">
+      <h3 id="loading-title">Authenticating theatre...</h3>
+      <p id="loading-status-text" class="text-muted">
+        Validating certificate and preparing playback
+      </p>
+      <p id="ingest-stats" class="text-muted"></p>
+    </div>
+    <div class="merkle-status-pill" id="merkle-status-badge">
+      Merkle proof verification
+    </div>
+    <div id="shard-transfer-list" class="shard-transfer-grid"></div>
+  </div>
+</div>
+
+
 <!-- ── Ingest & Master KEK Key Decryption Card ── -->
 <div id="auth-section" class="card">
   <div class="card-header-row">
@@ -48,10 +118,10 @@
   <div class="outage-simulator-card" style="margin-top: 1.5rem;">
     <div class="outage-sim-header">
       <div>
-        <strong style="color: #00f0ff; font-size: 0.95rem;"> AI Enmesh Distributed Storage Mesh</strong>
-        <p class="text-muted" style="font-size: 0.8rem; margin: 0.2rem 0 0 0;">Zero-Trust primary &amp; backup endpoints hosted on AI Enmesh (Ports 8001–8005).</p>
+        <strong> AI Enmesh Distributed Storage Mesh</strong>
+        <p class="text-muted">Zero-Trust primary &amp; backup endpoints hosted on AI Enmesh (Ports 8001–8005).</p>
       </div>
-      <span class="badge-active" id="enmesh-conn-badge" style="background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);"> AI ENMESH CONNECTED</span>
+      <span class="badge-active" id="enmesh-conn-badge"> AI ENMESH CONNECTED</span>
     </div>
     <div id="outage-toggle-buttons" class="node-toggle-grid">
       <button type="button" class="node-toggle-btn active" data-node="ENM-01">ENM-01 <span>ONLINE </span></button>

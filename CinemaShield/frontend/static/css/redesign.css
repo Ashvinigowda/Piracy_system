@@ -1,0 +1,961 @@
+﻿/* =====================================================================
+   CinemaShield — Unified Dark Theme (single source of truth)
+   Replaces ALL previous sections of redesign.css.
+   Visual only: no IDs, JS hooks or markup are assumed beyond the
+   selectors that already existed in the old file.
+   No !important is used anywhere.
+   ===================================================================== */
+
+/* ---------- 1. Design tokens ---------- */
+:root {
+  /* surfaces */
+  --cs-bg:        #0B1120;   /* page */
+  --cs-sidebar:   #111827;   /* sidebar + top bar */
+  --cs-panel:     #172033;   /* cards / panels */
+  --cs-raised:    #1E293B;   /* hover, table header, active nav */
+  --cs-input:     #0F172A;   /* form fields */
+  --cs-border:    #2B3648;
+
+  /* text */
+  --cs-text:      #F1F5F9;   /* 16:1 on page, 14:1 on panel */
+  --cs-muted:     #94A3B8;   /* ~6.3:1 on panel */
+  --cs-faint:     #64748B;   /* placeholders / decorative only */
+
+  /* accent (one only) */
+  --cs-accent:        #528BCA;  /* borders, icons, focus (4.6:1 on panel) */
+  --cs-accent-strong: #3B70AB;  /* button fill: white text = 5.1:1 */
+  --cs-accent-press:  #335F94;
+  --cs-accent-text:   #93C5FD;  /* links / active nav text */
+
+  /* status */
+  --cs-green: #4ADE80;
+  --cs-amber: #FBBF24;
+  --cs-red:   #F87171;
+
+  /* scale */
+  --cs-radius:    10px;
+  --cs-radius-sm: 6px;
+  --cs-gap:       20px;
+  --cs-pad:       28px;
+  --cs-max:       1400px;
+  --cs-font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --cs-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+
+/* ---------- 2. Base ---------- */
+html {
+  min-height: 100%;
+  background: var(--cs-bg);
+  color-scheme: dark;
+}
+
+body.command-center {
+  display: block;
+  margin: 0;
+  min-height: 100vh;
+  background: var(--cs-bg);
+  color: var(--cs-text);
+  font-family: var(--cs-font);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.command-center *,
+.command-center *::before,
+.command-center *::after { box-sizing: border-box; }
+
+.command-center h1,
+.command-center h2,
+.command-center h3,
+.command-center h4 {
+  margin-top: 0;
+  color: var(--cs-text);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+}
+
+.command-center p     { color: var(--cs-muted); line-height: 1.65; }
+.command-center label { color: #CBD5E1; }
+.command-center a     { color: var(--cs-accent-text); text-decoration: none; }
+.command-center a:hover { color: #BFDBFE; }
+
+.command-center pre,
+.command-center code { font-family: var(--cs-mono); }
+.command-center code { color: var(--cs-accent-text); overflow-wrap: anywhere; }
+.command-center pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 14px;
+  background: var(--cs-input);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+  color: var(--cs-text);
+}
+
+.command-center img,
+.command-center video,
+.command-center canvas { max-width: 100%; height: auto; }
+
+.command-center :focus-visible {
+  outline: 2px solid var(--cs-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 3. App shell ---------- */
+.command-center .app-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);   /* minmax(0,…) lets the content column shrink */
+  min-height: 100vh;
+  width: 100%;
+}
+
+.command-center .command-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.command-center .command-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--cs-max);
+  margin: 0 auto;
+  padding: var(--cs-pad);
+  min-width: 0;
+}
+
+.command-center .container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- 4. Sidebar ---------- */
+.command-center .command-sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 24px 16px 18px;
+  background: var(--cs-sidebar);
+  border-right: 1px solid var(--cs-border);
+}
+
+.command-center .command-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 28px;
+  color: var(--cs-text);
+}
+
+.command-center .command-brand-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--cs-panel);
+  border: 1px solid var(--cs-accent);
+  color: var(--cs-accent-text);
+  font-family: var(--cs-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.command-center .command-brand-name {
+  color: var(--cs-text);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.command-center .command-brand-name strong { font-weight: 700; }
+.command-center .command-brand-name small {
+  display: block;
+  margin-top: 4px;
+  color: var(--cs-muted);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+}
+
+.command-center .sidebar-section-label {
+  margin: 8px 10px 10px;
+  color: var(--cs-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+}
+
+.command-center .command-nav { display: grid; gap: 3px; }
+
+.command-center .command-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--cs-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.command-center .command-nav-link:hover {
+  background: var(--cs-raised);
+  color: var(--cs-text);
+}
+.command-center .command-nav-link.active {
+  background: #1B2A42;
+  border-color: #2F4A6E;
+  color: var(--cs-accent-text);
+}
+
+.command-center .command-nav-indicator {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--cs-faint);
+  border-radius: 50%;
+}
+.command-center .command-nav-link.active .command-nav-indicator {
+  background: var(--cs-accent);
+  border-color: var(--cs-accent);
+}
+
+.command-center .sidebar-section-secondary { margin-top: 28px; }
+
+.command-center .sidebar-module {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  color: var(--cs-muted);
+  font-size: 12px;
+}
+
+.command-center .module-dot,
+.command-center .topbar-status-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.command-center .module-blue   { background: var(--cs-accent); }
+.command-center .module-violet { background: var(--cs-muted); }   /* one accent rule: neutral instead of violet */
+.command-center .module-gold   { background: var(--cs-amber); }
+
+.command-center .sidebar-bottom {
+  margin-top: auto;
+  padding: 16px 10px 4px;
+  border-top: 1px solid var(--cs-border);
+}
+.command-center .sidebar-version {
+  color: var(--cs-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+.command-center .sidebar-caption {
+  margin-top: 4px;
+  color: var(--cs-muted);
+  font-size: 11px;
+}
+
+/* ---------- 5. Top bar ---------- */
+.command-center .command-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 72px;
+  padding: 14px var(--cs-pad);
+  background: var(--cs-sidebar);
+  border-bottom: 1px solid var(--cs-border);
+}
+.command-center .topbar-context { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.command-center .topbar-overline {
+  color: var(--cs-muted);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+}
+.command-center .topbar-title {
+  color: var(--cs-text);
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.command-center .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  background: var(--cs-panel);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+}
+.command-center .topbar-status-dot   { background: var(--cs-accent); }
+.command-center .topbar-status-label {
+  color: var(--cs-text);
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+
+/* ---------- 6. Cards and panels (one definition) ---------- */
+.command-center .card,
+.command-center .panel,
+.command-center .stat-card,
+.command-center .metric-card,
+.command-center .dashboard-card,
+.command-center .feature-card,
+.command-center .content-card,
+.command-center .analytics-card,
+.command-center .modal-content,
+.command-center .ai-card,
+.command-center .ai-section,
+.command-center .mesh-node-card,
+.command-center .mesh-node,
+.command-center .corporate-portal,
+.command-center .corporate-step,
+.command-center .portal-card,
+.command-center .arch-step,
+.command-center .outage-simulator-card {
+  min-width: 0;
+  background: var(--cs-panel);
+  color: var(--cs-text);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius);
+  box-shadow: none;
+  text-shadow: none;
+  backdrop-filter: none;
+}
+
+.command-center .card-header,
+.command-center .card-footer {
+  background: var(--cs-raised);
+  border-color: var(--cs-border);
+}
+.command-center .corporate-portal:hover,
+.command-center .portal-card:hover {
+  background: var(--cs-panel);
+  border-color: var(--cs-accent);
+  box-shadow: none;
+  transform: none;
+}
+
+.command-center .card,
+.command-center .ai-section,
+.command-center .ai-overview { margin-bottom: var(--cs-gap); }
+
+/* ---------- 7. Grids (every child can shrink: min-width:0) ---------- */
+.command-center .corporate-portals,
+.command-center .ai-overview,
+.command-center .mesh-grid,
+.command-center .analytics-split-grid,
+.command-center .corporate-architecture,
+.command-center .dashboard-grid,
+.command-center .card-grid,
+.command-center .portals-grid,
+.command-center .architecture-steps {
+  display: grid;
+  gap: var(--cs-gap);
+  min-width: 0;
+}
+.command-center .corporate-portals > *,
+.command-center .ai-overview > *,
+.command-center .mesh-grid > *,
+.command-center .analytics-split-grid > *,
+.command-center .corporate-architecture > *,
+.command-center .dashboard-grid > *,
+.command-center .card-grid > *,
+.command-center .portals-grid > *,
+.command-center .architecture-steps > * { min-width: 0; }
+.command-center .corporate-portals,
+.command-center .portals-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 12px 0 48px; }
+.command-center .analytics-split-grid  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.command-center .corporate-architecture,
+.command-center .architecture-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+/* auto-fit: as many equal columns as fit, never wider than the container */
+.command-center .ai-overview,
+.command-center .dashboard-grid,
+.command-center .card-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.command-center .mesh-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+
+.command-center .analytics-split-grid > *,
+.command-center .dashboard-grid > *,
+.command-center .card-grid > * { margin-bottom: 0; }   /* the grid gap already spaces them */
+
+/* text inside cards wraps instead of pushing the card wider */
+.command-center .ai-card *,
+.command-center .ai-section *,
+.command-center .mesh-node-card *,
+.command-center .mesh-node *,
+.command-center .corporate-portal *,
+.command-center .fp-value,
+.command-center .portal-card * { overflow-wrap: anywhere; }
+
+/* ---------- 8. Landing / dashboard ---------- */
+.command-center .corporate-hero,
+.command-center .hero-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0 36px;
+  text-align: center;
+  background: transparent;
+}
+.command-center .hero-eyebrow {
+  color: var(--cs-accent-text);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.command-center .corporate-title,
+.command-center .hero-title {
+  margin: 14px 0 12px;
+  color: var(--cs-text);
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+.command-center .corporate-brand-accent,
+.command-center .gradient-text {
+  color: var(--cs-accent-text);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+.command-center .corporate-tagline,
+.command-center .hero-tagline {
+  max-width: 660px;
+  margin: 0 auto;
+  color: var(--cs-muted);
+  font-size: 16px;
+}
+.command-center .corporate-feature-list,
+.command-center .hero-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.command-center .corporate-feature,
+.command-center .stat-pill {
+  padding: 6px 11px;
+  background: var(--cs-panel);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+  color: var(--cs-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+.command-center .corporate-portal,
+.command-center .portal-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  transition: border-color .15s ease;
+}
+.command-center .corporate-card-top {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--cs-border);
+}
+.command-center .corporate-card-label {
+  color: var(--cs-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+.command-center .corporate-portal .portal-body,
+.command-center .portal-card .portal-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 18px;
+}
+.command-center .corporate-portal h2,
+.command-center .portal-card h2 { margin: 0 0 10px; font-size: 19px; }
+.command-center .corporate-portal p,
+.command-center .portal-card p { margin: 0 0 22px; font-size: 13px; line-height: 1.75; }
+.command-center .corporate-portal .portal-action-btn,
+.command-center .portal-card .portal-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  color: var(--cs-accent-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.command-center .corporate-portal:hover .portal-action-btn,
+.command-center .portal-card:hover .portal-action-btn { color: #BFDBFE; transform: none; }
+.command-center .corporate-pipeline,
+.command-center .pipeline-overview-section {
+  margin: 0;
+  padding: 28px 0 8px;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--cs-border);
+  border-radius: 0;
+  backdrop-filter: none;
+}
+.command-center .corporate-section-heading,
+.command-center .section-heading { margin-bottom: 22px; }
+.command-center .corporate-section-heading h2,
+.command-center .section-heading h2 { margin: 8px 0; font-size: 24px; }
+.command-center .corporate-section-heading > p,
+.command-center .section-heading > p { margin-top: 4px; font-size: 14px; }
+.command-center .corporate-step,
+.command-center .arch-step { display: flex; gap: 16px; padding: 18px 20px; }
+.command-center .corporate-step .arch-step-num,
+.command-center .arch-step .arch-step-num {
+  flex-shrink: 0;
+  color: var(--cs-accent-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.command-center .corporate-step h3,
+.command-center .arch-step h3 { margin: 0 0 6px; font-size: 14px; }
+.command-center .corporate-step p,
+.command-center .arch-step p { margin: 0; font-size: 12px; line-height: 1.7; }
+
+/* ---------- 9. Analytics ---------- */
+.command-center .page-header { margin-bottom: 22px; background: transparent; }
+.command-center .page-header h1,
+.command-center .page-header h2 { color: var(--cs-text); }
+.command-center .header-tag { color: var(--cs-muted); font-size: 12px; letter-spacing: 0.4px; }
+
+.command-center .ai-card         { padding: 18px; }
+.command-center .ai-card-value   { color: var(--cs-text); font-weight: 600; }
+.command-center .ai-card-label   { color: var(--cs-muted); }
+.command-center .ai-card-icon    { box-shadow: none; }
+
+.command-center .ai-section      { padding: 20px; }
+.command-center .ai-section-title {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  color: var(--cs-text);
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--cs-border);
+}
+
+.command-center .mesh-node-card,
+.command-center .mesh-node { padding: 16px; }
+.command-center .mesh-node-icon   { color: var(--cs-accent-text); }
+.command-center .mesh-node-title,
+.command-center .mesh-stat-val    { color: var(--cs-text); }
+.command-center .mesh-node-region,
+.command-center .mesh-stat-lbl    { color: var(--cs-muted); }
+
+.command-center .ai-threat-bar,
+.command-center .auth-stat,
+.command-center .auth-stat-details,
+.command-center .auth-detail,
+.command-center .timeline-chart,
+.command-center .timeline-labels,
+.command-center .event-breakdown,
+.command-center .fingerprint-form { color: var(--cs-text); }
+.command-center .timeline-labels  { font-size: 11px; }
+
+.command-center .threat-meter {
+  overflow: hidden;
+  background: var(--cs-raised);
+  border-radius: 999px;
+}
+.command-center .threat-score,
+.command-center .empty-state,
+.command-center .auth-stat-label,
+.command-center .fp-label { color: var(--cs-muted); }
+
+.command-center .ring-bg   { stroke: var(--cs-border); }
+.command-center .ring-text { fill: var(--cs-text); }
+
+.command-center .fp-row   { border-bottom: 1px solid var(--cs-border); }
+.command-center .fp-value { color: var(--cs-text); }
+
+/* ---------- 9b. Components defined in style.css ---------- */
+/* Outage simulator: style.css hard-codes a WHITE card and light-green/red
+   buttons. Card surface comes from the shared card rule above. */
+.command-center .node-toggle-btn {
+  background: rgba(74, 222, 128, .10);
+  color: var(--cs-green);
+  border: 1px solid #286344;
+}
+.command-center .node-toggle-btn:hover { background: rgba(74, 222, 128, .18); }
+.command-center .node-toggle-btn.offline {
+  background: #3B2027;
+  color: var(--cs-red);
+  border-color: #71333D;
+}
+.command-center .node-toggle-btn.offline:hover { background: #4A2630; }
+
+/* Inset surfaces: one colour instead of five different rgba(0,0,0,x) */
+.command-center .cert-info-grid,
+.command-center .meta-item,
+.command-center .loading-container,
+.command-center .fingerprint-result,
+.command-center .code-block,
+.command-center .trace-result-box,
+.command-center .dropzone {
+  background: var(--cs-input);
+  border: 1px solid var(--cs-border);
+}
+.command-center .code-content { background: var(--cs-bg); }
+
+/* One accent: remove gold borders/gradients and glows */
+.command-center .lab-section,
+.command-center .trace-result-box { border-color: var(--cs-border); }
+.command-center .brand-logo-glow { filter: none; }
+.command-center .brand-badge,
+.command-center .role-chip {
+  background: #1B2A42;
+  color: var(--cs-accent-text);
+  border: 1px solid #2F4A6E;
+}
+.command-center .hero-badge {
+  background: #1B2A42;
+  color: var(--cs-accent-text);
+  border: 1px solid #2F4A6E;
+}
+.command-center .preset-chip:hover {
+  background: #1B2A42;
+  color: var(--cs-accent-text);
+  border-color: #2F4A6E;
+}
+.command-center .node-status-dot         { background: var(--cs-green); box-shadow: none; }
+.command-center .node-status-dot.offline { background: var(--cs-red);   box-shadow: none; }
+.command-center .step.active .step-dot   { background: var(--cs-accent); border-color: var(--cs-accent-text); box-shadow: none; }
+.command-center .step.done .step-dot     { background: var(--cs-green);  border-color: var(--cs-green); }
+.command-center .step.done .step-line    { background: var(--cs-green); }
+.command-center .live-pulse              { background: var(--cs-red); box-shadow: none; }
+.command-center .progress-bar            { background: var(--cs-accent); }
+.command-center .ring-fill               { stroke: var(--cs-green); }
+
+/* Storage-mesh widget header (theatre page): text colours live here, not inline */
+.command-center .outage-sim-header strong { color: var(--cs-text); font-size: 15px; font-weight: 600; }
+.command-center .outage-sim-header p { margin: 2px 0 0; font-size: 13px; }
+.command-center .badge-active,
+.command-center .badge-tag { white-space: nowrap; }
+.command-center .node-toggle-btn span { margin-left: 4px; font-size: 11px; opacity: .85; }
+.command-center select + .btn { margin-top: 12px; }
+
+/* Fixed widths / px minimums in style.css that can overflow narrow cards */
+.command-center .event-name { flex: 0 0 auto; width: min(200px, 45%); }
+.command-center .fingerprint-form input { min-width: min(200px, 100%); }
+.command-center .input-row { flex-wrap: wrap; }
+.command-center .input-row input { flex: 1 1 240px; min-width: 0; }   /* wraps under the button on narrow screens */
+.command-center .step { min-width: 0; text-align: center; }
+.command-center .cert-info-grid  { grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
+.command-center .shard-transfer-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.command-center .meta-grid       { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.command-center .code-content,
+.command-center .fp-value        { overflow-wrap: anywhere; }
+
+/* ---------- 9c. Components built by analytics.js ---------- */
+/* Classes below are created at runtime by the script; none had styles before. */
+
+/* risk level (class set on #risk-level) and threat meter (class set on #threat-fill) */
+.command-center .risk-low      { color: var(--cs-green); }
+.command-center .risk-medium   { color: var(--cs-amber); }
+.command-center .risk-high,
+.command-center .risk-critical { color: var(--cs-red); }
+/* solid fill per level: a full green-to-red gradient squeezed into a short bar would mislead */
+.command-center .threat-fill                { background: var(--cs-accent); }
+.command-center .threat-fill.threat-low     { background: var(--cs-green); }
+.command-center .threat-fill.threat-medium  { background: var(--cs-amber); }
+.command-center .threat-fill.threat-high,
+.command-center .threat-fill.threat-critical{ background: var(--cs-red); }
+
+/* status badges: both states share one shape (style.css only sized .badge-active) */
+.command-center .badge-active,
+.command-center .badge-inactive {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+/* storage-node cards */
+.command-center .mesh-node-card { gap: 14px; }
+.command-center .mesh-node-header { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+.command-center .mesh-node-icon { flex-shrink: 0; font-size: 18px; line-height: 1.2; }
+.command-center .mesh-node-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.command-center .mesh-node-title strong { color: var(--cs-text); font-size: 14px; font-weight: 600; }
+.command-center .mesh-node-region { color: var(--cs-muted); font-family: var(--cs-mono); font-size: 11px; }
+.command-center .mesh-node-stats { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--cs-border); }
+.command-center .mesh-stat { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; min-width: 0; }
+.command-center .mesh-stat-lbl { flex-shrink: 0; color: var(--cs-muted); font-size: 12px; }
+.command-center .mesh-stat-val { min-width: 0; color: var(--cs-text); font-size: 12.5px; text-align: right; }
+
+/* anomalies */
+.command-center .anomaly-item {
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  background: var(--cs-input);
+  border: 1px solid var(--cs-border);
+  border-left: 3px solid var(--cs-accent);
+  border-radius: var(--cs-radius-sm);
+}
+.command-center .anomaly-item:last-child { margin-bottom: 0; }
+.command-center .anomaly-item.anomaly-medium   { border-left-color: var(--cs-amber); }
+.command-center .anomaly-item.anomaly-high,
+.command-center .anomaly-item.anomaly-critical { border-left-color: var(--cs-red); }
+.command-center .anomaly-header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+.command-center .anomaly-badge {
+  padding: 2px 8px;
+  background: var(--cs-raised);
+  border: 1px solid var(--cs-border);
+  border-radius: 999px;
+  color: var(--cs-accent-text);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+.command-center .anomaly-medium .anomaly-badge   { background: #3A2E10; border-color: #6B5415; color: var(--cs-amber); }
+.command-center .anomaly-high .anomaly-badge,
+.command-center .anomaly-critical .anomaly-badge { background: #3B2027; border-color: #71333D; color: var(--cs-red); }
+.command-center .anomaly-type { color: var(--cs-text); font-size: 13px; font-weight: 600; text-transform: capitalize; }
+.command-center .anomaly-msg  { margin: 0 0 4px; color: #CBD5E1; font-size: 13px; }
+.command-center .anomaly-rec  { margin: 0; color: var(--cs-muted); font-size: 12px; }
+.command-center .empty-state  { padding: 18px 0; text-align: center; font-size: 13px; }
+
+/* hourly timeline: script appends bars straight into the chart and positions labels with left:% */
+.command-center .timeline-chart { gap: 3px; }
+.command-center .tl-bar        { flex: 1 1 0; min-width: 0; background: rgba(148, 163, 184, .22); }
+.command-center .tl-bar-active { background: rgba(82, 139, 202, .75); }
+.command-center .tl-bar:hover  { background: var(--cs-accent); }
+.command-center .timeline-labels { position: relative; display: block; height: 18px; }
+.command-center .tl-label { position: absolute; top: 0; font-family: var(--cs-mono); }
+
+/* event breakdown: colour comes from the class getEventClass() returns */
+.command-center .event-name { color: var(--cs-text); overflow-wrap: anywhere; }
+.command-center .event-bar-track { background: var(--cs-raised); }
+.command-center .event-bar-fill  { background: var(--cs-accent); min-width: 2px; }
+.command-center .event-bar-fill.ev-danger { background: var(--cs-red); }
+.command-center .event-bar-fill.ev-warn   { background: var(--cs-amber); }
+.command-center .event-bar-fill.ev-ai     { background: var(--cs-accent); }
+.command-center .event-bar-fill.ev-info   { background: #64748B; }
+.command-center .event-count {
+  flex-shrink: 0;
+  min-width: 2.5ch;
+  color: var(--cs-muted);
+  font-family: var(--cs-mono);
+  font-size: 12px;
+  text-align: right;
+}
+
+/* ---------- 9d. Classes built by producer.js / theatre.js ---------- */
+/* Their markup has not been reviewed yet: these are deliberately minimal. */
+.command-center .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* style.css styles .dragover (no hyphen) but producer.js adds .drag-over: support both */
+.command-center .dropzone:hover,
+.command-center .dropzone.dragover,
+.command-center .dropzone.drag-over {
+  border-color: var(--cs-accent);
+  background: #16233A;
+}
+
+.command-center .history-item {
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  background: var(--cs-input);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+}
+.command-center .history-item:last-child { margin-bottom: 0; }
+
+.command-center .shard-transfer-card {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--cs-input);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+  font-size: 12px;
+}
+
+/* ---------- 10. Buttons ---------- */
+.command-center button,
+.command-center .btn {
+  border-radius: var(--cs-radius-sm);
+  box-shadow: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.command-center .btn-primary,
+.command-center .btn-gold,
+.command-center button.primary,
+.command-center button[type="submit"],
+.command-center input[type="submit"] {
+  background: var(--cs-accent-strong);
+  border: 1px solid var(--cs-accent-strong);
+  color: #FFFFFF;
+}
+.command-center .btn-primary:hover,
+.command-center .btn-gold:hover,
+.command-center button.primary:hover,
+.command-center button[type="submit"]:hover,
+.command-center input[type="submit"]:hover {
+  background: var(--cs-accent-press);
+  border-color: var(--cs-accent-press);
+  color: #FFFFFF;
+  box-shadow: none;
+  transform: none;
+}
+
+.command-center .btn-outline,
+.command-center .btn-secondary {
+  background: transparent;
+  border: 1px solid #46658A;
+  color: var(--cs-accent-text);
+}
+.command-center .btn-outline:hover,
+.command-center .btn-secondary:hover { background: #1B2A42; color: #BFDBFE; }
+
+/* ---------- 11. Forms ---------- */
+.command-center input,
+.command-center select,
+.command-center textarea {
+  max-width: 100%;
+  background: var(--cs-input);
+  color: var(--cs-text);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius-sm);
+  box-shadow: none;
+}
+.command-center input::placeholder,
+.command-center textarea::placeholder { color: var(--cs-faint); }
+.command-center input:focus,
+.command-center select:focus,
+.command-center textarea:focus {
+  border-color: var(--cs-accent);
+  outline: 2px solid rgba(82, 139, 202, .3);
+  outline-offset: 1px;
+}
+
+.command-center input[type="checkbox"],
+.command-center input[type="radio"],
+.command-center input[type="range"] {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  accent-color: var(--cs-accent);
+}
+
+/* ---------- 12. Tables ---------- */
+/* No display:block here: it breaks column layout. Wide tables scroll only
+   if you wrap them (see notes); otherwise cells wrap their text. */
+.command-center table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--cs-text);
+}
+.command-center th,
+.command-center td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cs-border);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.command-center th {
+  background: var(--cs-raised);
+  color: #CBD5E1;
+  font-weight: 600;
+}
+.command-center tbody tr:hover { background: var(--cs-raised); }
+
+/* ---------- 13. Badges / status ---------- */
+.command-center .badge-active {
+  color: var(--cs-green);
+  background: #153526;
+  border: 1px solid #286344;
+}
+.command-center .badge-inactive {
+  color: var(--cs-red);
+  background: #3B2027;
+  border: 1px solid #71333D;
+}
+
+/* ---------- 14. Footer ---------- */
+.command-center .command-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 16px var(--cs-pad);
+  background: var(--cs-sidebar);
+  border-top: 1px solid var(--cs-border);
+  color: var(--cs-muted);
+  font-size: 12px;
+}
+.command-center .command-footer strong { color: var(--cs-text); }
+
+/* ---------- 15. Responsive (one block, mobile-last) ---------- */
+@media (max-width: 1100px) {
+.command-center .corporate-portals,
+.command-center .portals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .command-center .app-shell { grid-template-columns: 210px minmax(0, 1fr); }
+  .command-center .command-content { padding: 20px; }
+  .command-center .command-topbar,
+  .command-center .command-footer { padding-left: 20px; padding-right: 20px; }
+  .command-center .analytics-split-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 700px) {
+.command-center .corporate-portals,
+.command-center .corporate-architecture,
+.command-center .portals-grid,
+.command-center .architecture-steps { grid-template-columns: minmax(0, 1fr); }
+.command-center .corporate-hero,
+.command-center .hero-section { padding: 28px 0; }
+.command-center .corporate-tagline,
+.command-center .hero-tagline { font-size: 14px; }
+}
+
+@media (max-width: 650px) {
+  .command-center .app-shell { grid-template-columns: minmax(0, 1fr); }
+
+  .command-center .command-sidebar {
+    position: relative;
+    height: auto;
+    overflow-y: visible;
+    padding: 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--cs-border);
+  }
+  .command-center .command-brand { padding-bottom: 14px; }
+  .command-center .sidebar-section-label,
+  .command-center .sidebar-module,
+  .command-center .sidebar-bottom { display: none; }
+
+  .command-center .command-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .command-center .command-nav-link { min-height: 38px; padding: 8px 10px; font-size: 12px; }
+
+  .command-center .command-topbar { position: relative; min-height: 60px; padding: 12px 14px; }
+  .command-center .command-content { padding: 16px 14px; }
+  .command-center .command-footer { padding: 14px; }
+  .command-center .ai-section { padding: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-center * { transition: none; }
+}

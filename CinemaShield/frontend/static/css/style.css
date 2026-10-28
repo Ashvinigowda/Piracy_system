@@ -785,11 +785,12 @@ label {
 }
 
 /* ── Outage Simulator Widget ─────────────── */
+/* Outage Simulator Widget */
 .outage-simulator-card {
   margin: 1.2rem 0;
   padding: 1rem 1.2rem;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px dashed var(--border);
+  background: #FFFFFF;
+  border: 1px solid #E1E6ED;
   border-radius: var(--radius-sm);
 }
 
@@ -809,9 +810,9 @@ label {
 }
 
 .node-toggle-btn {
-  background: rgba(16, 185, 129, 0.1);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: #EAF5EF;
+  color: #27845A;
+  border: 1px solid #CBE8D7;
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-sm);
   font-size: 0.8rem;
@@ -822,17 +823,17 @@ label {
 }
 
 .node-toggle-btn:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: #D9EDE2;
 }
 
 .node-toggle-btn.offline {
-  background: rgba(239, 68, 68, 0.12);
-  color: #f87171;
-  border-color: rgba(239, 68, 68, 0.4);
+  background: #FDECEC;
+  color: #C24141;
+  border-color: #F3C5C5;
 }
 
 .node-toggle-btn.offline:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: #FBDDDD;
 }
 
 /* ── Theatre Certificate Info ────────────── */

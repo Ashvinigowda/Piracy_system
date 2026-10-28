@@ -18,3 +18,9 @@ CinemaShield/frontend/temp/
 
 # AI Enmesh node storage
 AI-Enmesh/nodes/
+
+# Local Python environment
+.venv/
+__pycache__/
+*.py[cod]
+.env
